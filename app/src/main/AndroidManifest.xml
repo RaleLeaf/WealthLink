@@ -13,6 +13,9 @@
         android:theme="@style/Theme.WealthLink"
         tools:targetApi="31">
         <activity
+            android:name=".AccountView"
+            android:exported="false" />
+        <activity
             android:name=".TransactionHistory"
             android:exported="false" />
         <activity

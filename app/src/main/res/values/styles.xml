@@ -1,4 +1,11 @@
-<style name="CircleImage" parent="">
-    <item name="cornerFamily">rounded</item>
-    <item name="cornerSize">50%</item>
-</style>
+<resources>
+
+    <!-- Example of your App Theme -->
+    <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+
+    <!-- Circular Image Style -->
+    <style name="CircleImage" parent="ShapeAppearanceOverlay.MaterialComponents.ImageView">
+        <item name="cornerSize">50%</item>
+    </style>
+
+</resources>
