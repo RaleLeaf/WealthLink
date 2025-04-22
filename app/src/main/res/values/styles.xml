@@ -3,6 +3,12 @@
     <!-- Example of your App Theme -->
     <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
 
+    <style name="ShapeAppearanceOverlay.MaterialComponents.ImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+
     <!-- Circular Image Style -->
     <style name="CircleImage" parent="ShapeAppearanceOverlay.MaterialComponents.ImageView">
         <item name="cornerSize">50%</item>

@@ -65,6 +65,7 @@
                     android:textSize="20dp"
                     android:layout_marginBottom="15dp"/>
                 <EditText
+                    android:id="@+id/inputEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Email"
@@ -74,6 +75,7 @@
                     android:layout_marginBottom="12dp" />
 
                 <EditText
+                    android:id="@+id/inputPasword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Password"
@@ -83,6 +85,7 @@
                     android:layout_marginBottom="12dp" />
 
                 <EditText
+                    android:id="@+id/inputVerifyPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Verify Password"
@@ -92,22 +95,24 @@
                     android:layout_marginBottom="24dp" />
 
                 <Button
+                    android:id="@+id/btnSignUp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:padding="15dp"
                     android:layout_margin="5dp"
                     android:backgroundTint="#50d967"
-                    android:text="LOGIN" />
+                    android:text="SIGN UP" />
 
                 <Button
+                    android:id="@+id/btnLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:padding="15dp"
                     android:layout_margin="5dp"
                     android:backgroundTint="#50d967"
-                    android:text="NEXT STEP" />
+                    android:text="BACK TO LOGIN" />
             </LinearLayout>
         </LinearLayout>
 

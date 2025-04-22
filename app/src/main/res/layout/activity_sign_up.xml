@@ -65,6 +65,7 @@
                     android:textSize="20dp"
                     android:layout_marginBottom="15dp"/>
                 <EditText
+                    android:id="@+id/inputFirstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="First Name"
@@ -74,6 +75,7 @@
                     android:layout_marginBottom="12dp" />
 
                 <EditText
+                    android:id="@+id/inputMiddleName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Middle Name"
@@ -83,6 +85,7 @@
                     android:layout_marginBottom="12dp" />
 
                 <EditText
+                    android:id="@+id/inputLastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Last Name"
@@ -92,15 +95,7 @@
                     android:layout_marginBottom="24dp" />
 
                 <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:padding="15dp"
-                    android:layout_margin="5dp"
-                    android:backgroundTint="#50d967"
-                    android:text="LOGIN" />
-
-                <Button
+                    android:id="@+id/btnNextStep"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -108,6 +103,18 @@
                     android:layout_margin="5dp"
                     android:backgroundTint="#50d967"
                     android:text="NEXT STEP" />
+
+                <Button
+                    android:id="@+id/btnLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"
+                    android:backgroundTint="#50d967"
+                    android:text="BACK TO LOGIN" />
+
+
             </LinearLayout>
         </LinearLayout>
 

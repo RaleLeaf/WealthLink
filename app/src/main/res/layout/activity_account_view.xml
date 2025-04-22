@@ -25,7 +25,7 @@
         <ImageView
             android:layout_width="200dp"
             android:layout_height="80dp"
-            app:srcCompat="@drawable/logoFull"
+            app:srcCompat="@drawable/logofull"
             android:layout_marginLeft="45dp"
             android:gravity="center_horizontal" />
     </LinearLayout>
@@ -65,7 +65,7 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/profImg"
+            android:src="@drawable/profimg"
             android:layout_marginTop="72dp"
             android:layout_marginLeft="16dp"
             app:shapeAppearance="@style/CircleImage" />
