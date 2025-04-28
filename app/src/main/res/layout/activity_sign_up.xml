@@ -101,6 +101,7 @@
                     android:text="LOGIN" />
 
                 <Button
+                    android:id="@+id/button_next_step"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
