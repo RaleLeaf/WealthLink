@@ -37,6 +37,8 @@ public class Login extends AppCompatActivity {
                 // Update to check if Username or Password is empty or wrong after DB
                 if (Email.getText().toString().trim().equals("francis@rale.co") && Password.getText().toString().trim().equals("123")) {
                     Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                    Intent homeIntent = new Intent(Login.this, AccountView.class);
+                    startActivity(homeIntent);
                     // Intent to go to main page after verification
                 } else {
                     if (Email.getText().toString().trim().isEmpty()) {
