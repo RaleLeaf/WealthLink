@@ -38,6 +38,8 @@ public class Login extends AppCompatActivity {
                 if (Email.getText().toString().trim().equals("francis@rale.co") && Password.getText().toString().trim().equals("123")) {
                     Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                     // Intent to go to main page after verification
+                    Intent homeIntent = new Intent(Login.this, TransactionHistory.class);
+                    startActivity(homeIntent);
                 } else {
                     if (Email.getText().toString().trim().isEmpty()) {
                         Toast.makeText(getApplicationContext(), "Please enter your email", Toast.LENGTH_SHORT).show();

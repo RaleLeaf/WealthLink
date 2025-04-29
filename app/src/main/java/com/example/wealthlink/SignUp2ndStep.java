@@ -54,6 +54,8 @@ public class SignUp2ndStep extends AppCompatActivity {
                     // Passwords match, proceed to the next step
                     Toast.makeText(getApplicationContext(), "Passwords match. Proceeding to next step...", Toast.LENGTH_SHORT).show();
                     // Intent to go to Homepage
+                    Intent homeIntent = new Intent(SignUp2ndStep.this, TransactionHistory.class);
+                    startActivity(homeIntent);
                 }
             }
         });
