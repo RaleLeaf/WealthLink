@@ -17,18 +17,19 @@
         android:id="@+id/ivMenu"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_marginTop="10dp"
         android:src="@drawable/ic_menu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/ivLogo"
-        android:layout_width="match_parent"
+        android:layout_width="180dp"
         android:layout_height="90dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/logofull"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="-22dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,7 +38,7 @@
         android:id="@+id/llActions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/ivLogo">
 
