@@ -1,41 +1,49 @@
 package com.example.wealthlink;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+import android.view.Gravity;
+
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.wealthlink.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class wealthLinkMainPage extends AppCompatActivity {
-    private GroupAdapter groupAdapter;
     private RecyclerView rvGroups;
+    private DrawerLayout drawerLayout;
+    private ImageView ivMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wealth_link_main_page);
 
-        // Configure the logo to display properly (if needed)
-        ImageView logoImageView = findViewById(R.id.ivLogo);
-        // Make sure the PNG is properly scaled to fit while maintaining aspect ratio
-        logoImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
-        // Initialize RecyclerView
+        drawerLayout = findViewById(R.id.drawerLayout);
+        ivMenu = findViewById(R.id.ivMenu);
         rvGroups = findViewById(R.id.rvGroups);
-        rvGroups.setLayoutManager(new LinearLayoutManager(this));
 
-        // Sample data for demo purposes
+        ivMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        rvGroups.setLayoutManager(new LinearLayoutManager(this));
         List<Group> groups = new ArrayList<>();
         groups.add(new Group("Lively Inc.", "21:21", "$432"));
         groups.add(new Group("Lively Inc.", "21:21", "$432"));
-        // Add more sample data as needed
 
-        // Set up adapter
-        groupAdapter = new GroupAdapter(groups);
+        GroupAdapter groupAdapter = new GroupAdapter(groups);
         rvGroups.setAdapter(groupAdapter);
     }
 }
