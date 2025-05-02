@@ -61,7 +61,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Enter Name Details"
+                    android:text="Enter Details"
                     android:textSize="20dp"
                     android:layout_marginBottom="15dp"/>
                 <EditText

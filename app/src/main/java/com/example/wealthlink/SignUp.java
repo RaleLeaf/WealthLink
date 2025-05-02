@@ -1,5 +1,6 @@
 package com.example.wealthlink;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -57,7 +58,11 @@ public class SignUp extends AppCompatActivity {
                 } else {
                     // All fields filled, continue to next step
                     Intent NextStepIntent = new Intent(SignUp.this, SignUp2ndStep.class);
+                    NextStepIntent.putExtra("firstName", firstName);
+                    NextStepIntent.putExtra("middleName", middleName);
+                    NextStepIntent.putExtra("lastName", lastName);
                     startActivity(NextStepIntent);
+                    finish();
                 }
             }
         });
