@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1082291745834",
+    "project_id": "mobdev-wealthlink",
+    "storage_bucket": "mobdev-wealthlink.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082291745834:android:a569c418d3fcaf2c9dff53",
+        "android_client_info": {
+          "package_name": "com.example.wealthlink"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqozqxUjqWXdRb6wzFw9Z09gTlh2lyVR4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

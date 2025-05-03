@@ -8,14 +8,23 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 public class Login extends AppCompatActivity {
     Button Login, SignUp;
-    EditText Email, Password;
+    EditText EmailInput, PasswordInput;
+
+    // Firebase
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,17 +35,23 @@ public class Login extends AppCompatActivity {
         Login = (Button) findViewById(R.id.btnLogin);
         SignUp = (Button) findViewById(R.id.btnSignUp);
 
-        Email = (EditText) findViewById(R.id.inputEmail);
-        Password = (EditText) findViewById(R.id.inputPasword);
+        EmailInput = (EditText) findViewById(R.id.inputEmail);
+        PasswordInput = (EditText) findViewById(R.id.inputPasword);
 
+        mAuth = FirebaseAuth.getInstance();
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Temporary Verification, add proper when database is made
+                String email = EmailInput.getText().toString().trim();
+                String password = PasswordInput.getText().toString().trim();
+
+                /* Temporary Verification, add proper when database is made
                 // Update to check if Username or Password is empty or wrong after DB
                 if (Email.getText().toString().trim().equals("francis@rale.co") && Password.getText().toString().trim().equals("123")) {
                     Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                    Intent homeIntent = new Intent(Login.this, wealthLinkMainPage.class);
+                    startActivity(homeIntent);
                     // Intent to go to main page after verification
                     Intent homeIntent = new Intent(Login.this, TransactionHistory.class);
                     startActivity(homeIntent);
@@ -48,7 +63,33 @@ public class Login extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), "Invalid Email or Password", Toast.LENGTH_SHORT).show();
                     }
+                }*/
+                if (email.trim().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please enter your email", Toast.LENGTH_SHORT).show();
+                } else if (password.trim().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_SHORT).show();
+                } else {
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Toast.makeText(Login.this, "Success!",
+                                                Toast.LENGTH_SHORT).show();
+                                        Intent homeIntent = new Intent(Login.this, wealthLinkMainPage.class);
+                                        startActivity(homeIntent);
+                                        finish();
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Toast.makeText(Login.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
                 }
+
             }
         });
 
