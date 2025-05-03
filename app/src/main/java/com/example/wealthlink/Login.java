@@ -45,25 +45,6 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 String email = EmailInput.getText().toString().trim();
                 String password = PasswordInput.getText().toString().trim();
-
-                /* Temporary Verification, add proper when database is made
-                // Update to check if Username or Password is empty or wrong after DB
-                if (Email.getText().toString().trim().equals("francis@rale.co") && Password.getText().toString().trim().equals("123")) {
-                    Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                    Intent homeIntent = new Intent(Login.this, wealthLinkMainPage.class);
-                    startActivity(homeIntent);
-                    // Intent to go to main page after verification
-                    Intent homeIntent = new Intent(Login.this, TransactionHistory.class);
-                    startActivity(homeIntent);
-                } else {
-                    if (Email.getText().toString().trim().isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "Please enter your email", Toast.LENGTH_SHORT).show();
-                    } else if (Password.getText().toString().trim().isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Invalid Email or Password", Toast.LENGTH_SHORT).show();
-                    }
-                }*/
                 if (email.trim().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Please enter your email", Toast.LENGTH_SHORT).show();
                 } else if (password.trim().isEmpty()) {

@@ -120,7 +120,7 @@ public class SignUp2ndStep extends AppCompatActivity {
                                 }
                             });
                     // Intent to go to Homepage
-                    Intent homeIntent = new Intent(SignUp2ndStep.this, TransactionHistory.class);
+                    Intent homeIntent = new Intent(SignUp2ndStep.this, wealthLinkMainPage.class);
                     startActivity(homeIntent);
                 }
             }
