@@ -88,32 +88,34 @@ public class SignUp2ndStep extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Toast.makeText(SignUp2ndStep.this, "Account Created", Toast.LENGTH_SHORT).show();
+                                        // Account created
+                                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                                        if (firebaseUser != null) {
+                                            String userId = firebaseUser.getUid(); // Get UID
 
-                                        Map<String, Object> user = new HashMap<>();
-                                        user.put("firstName", firstName);
-                                        user.put("middleName", middleName);
-                                        user.put("lastName", lastName);
+                                            Map<String, Object> user = new HashMap<>();
+                                            user.put("firstName", firstName);
+                                            user.put("middleName", middleName);
+                                            user.put("lastName", lastName);
 
-                                        // Add user Information Names to DB;
-                                        db.collection("users")
-                                                .add(user)
-                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                    @Override
-                                                    public void onSuccess(DocumentReference documentReference) {
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                    }
-                                                });
-
+                                            // Store user info with UID as document ID
+                                            db.collection("users").document(userId)
+                                                    .set(user)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Toast.makeText(SignUp2ndStep.this, "User data saved", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Toast.makeText(SignUp2ndStep.this, "Error saving user data", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
                                     } else {
-                                        // If sign in fails, display a message to the user.
-                                        Toast.makeText(SignUp2ndStep.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SignUp2ndStep.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
