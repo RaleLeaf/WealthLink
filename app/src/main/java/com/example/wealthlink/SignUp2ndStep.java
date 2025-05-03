@@ -16,11 +16,18 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUp2ndStep extends AppCompatActivity {
     EditText EmailInput, PasswordInput, VerifyPasswordInput;
@@ -30,6 +37,7 @@ public class SignUp2ndStep extends AppCompatActivity {
 
     // firebase
     FirebaseAuth mAuth;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,7 @@ public class SignUp2ndStep extends AppCompatActivity {
         lastName = getIntent().getStringExtra("lastName");
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +91,24 @@ public class SignUp2ndStep extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         Toast.makeText(SignUp2ndStep.this, "Account Created", Toast.LENGTH_SHORT).show();
 
+                                        Map<String, Object> user = new HashMap<>();
+                                        user.put("firstName", firstName);
+                                        user.put("middleName", middleName);
+                                        user.put("lastName", lastName);
+
                                         // Add user Information Names to DB;
+                                        db.collection("users")
+                                                .add(user)
+                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentReference documentReference) {
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                    }
+                                                });
 
                                     } else {
                                         // If sign in fails, display a message to the user.
