@@ -2,6 +2,7 @@ package com.example.wealthlink;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,15 +30,15 @@ public class AddAccount extends AppCompatActivity {
         btnAddAccount = findViewById(R.id.btnAddAccount);
         btnBack = findViewById(R.id.btnBack);
         accountAddedDialog = findViewById(R.id.accountAddedDialog);
-        btnAddAccount = findViewById(R.id.btnAddAccount);
 
         btnAddAccount.setOnClickListener(v -> {
             // Show the dialog
             accountAddedDialog.setVisibility(View.VISIBLE);
 
             // Auto-hide after 2 seconds
-            new Handler().postDelayed(() ->
+            new Handler(Looper.getMainLooper()).postDelayed(() ->
                     accountAddedDialog.setVisibility(View.GONE), 2000);
+
             onBackPressed();
         });
 
