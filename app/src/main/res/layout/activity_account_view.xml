@@ -27,13 +27,15 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="260dp"
-                android:layout_marginTop="-20dp">
+                android:layout_marginTop="0dp"
+                >
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/profile_bg"
-                    android:layout_gravity="center_vertical" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="50dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"

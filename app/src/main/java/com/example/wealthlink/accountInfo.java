@@ -27,7 +27,6 @@ public class accountInfo extends AppCompatActivity {
         recyclerAccounts = findViewById(R.id.recyclerAccounts);
         recyclerAccounts.setLayoutManager(new LinearLayoutManager(this));
 
-        // Dummy account list
         accountList = new ArrayList<>();
         accountList.add(new Account("BPI Debit 2110", "Kurt Zander Kaw"));
         accountList.add(new Account("Metrobank 8723", "Kurt Zander Kaw"));
