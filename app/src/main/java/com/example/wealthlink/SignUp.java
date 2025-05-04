@@ -52,15 +52,13 @@ public class SignUp extends AppCompatActivity {
 
                 if (firstName.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Please enter your first name", Toast.LENGTH_SHORT).show();
-                } else if (middleName.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Please enter your middle name", Toast.LENGTH_SHORT).show();
                 } else if (lastName.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Please enter your last name", Toast.LENGTH_SHORT).show();
                 } else {
                     // All fields filled, continue to next step
                     Intent NextStepIntent = new Intent(SignUp.this, SignUp2ndStep.class);
                     NextStepIntent.putExtra("firstName", firstName);
-                    NextStepIntent.putExtra("middleName", middleName);
+                    NextStepIntent.putExtra("middleName", middleName); // No input checking
                     NextStepIntent.putExtra("lastName", lastName);
                     startActivity(NextStepIntent);
                     finish();

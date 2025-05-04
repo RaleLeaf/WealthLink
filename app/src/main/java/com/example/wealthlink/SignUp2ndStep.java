@@ -52,6 +52,8 @@ public class SignUp2ndStep extends AppCompatActivity {
         Login = (Button) findViewById(R.id.btnLogin);
         SignUp = (Button) findViewById(R.id.btnSignUp);
 
+        middleName = null;
+
         firstName = getIntent().getStringExtra("firstName");
         middleName = getIntent().getStringExtra("middleName");
         lastName = getIntent().getStringExtra("lastName");
