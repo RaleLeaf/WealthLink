@@ -1,17 +1,23 @@
 package com.example.wealthlink;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.widget.ImageView;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +28,7 @@ public class GroupOverview extends AppCompatActivity {
     private CardView cardDropdown;
     private RecyclerView rvExpenses;
     private ExpenseAdapter expenseAdapter;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +36,13 @@ public class GroupOverview extends AppCompatActivity {
         setContentView(R.layout.activity_group_overview);
 
         // Initialize views
+        drawerLayout = findViewById(R.id.drawerLayout);
         btnMore = findViewById(R.id.btnMore);
         cardDropdown = findViewById(R.id.cardDropdown);
         rvExpenses = findViewById(R.id.rvExpenses);
+
+        // Initialize navigation items
+        setupNavigation();
 
         // Set up dropdown menu
         setupDropdownMenu();
@@ -40,11 +51,61 @@ public class GroupOverview extends AppCompatActivity {
         ImageButton btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> onBackPressed());
 
+        // Set up hamburger menu button
+        ImageButton btnHamburger = findViewById(R.id.btnHamburger);
+        btnHamburger.setOnClickListener(v -> {
+            drawerLayout.openDrawer(GravityCompat.START);
+        });
+
         // Setup chart
         setupChart();
 
         // Setup expenses recycler view
         setupExpensesRecyclerView();
+    }
+
+    private void setupNavigation() {
+        // Set up navigation item click listeners
+        LinearLayout navHome = findViewById(R.id.nav_home);
+        LinearLayout navGroups = findViewById(R.id.nav_groups);
+        LinearLayout navNotifications = findViewById(R.id.nav_notifications);
+        LinearLayout navHistory = findViewById(R.id.nav_history);
+        LinearLayout navAccount = findViewById(R.id.nav_account);
+
+        navHome.setOnClickListener(v -> {
+            // Navigate to Home
+            Intent intent = new Intent(this, wealthLinkMainPage.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navGroups.setOnClickListener(v -> {
+            // Already on Groups page
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navNotifications.setOnClickListener(v -> {
+            // Navigate to Notifications
+            // Replace with actual class name
+            // Intent intent = new Intent(this, NotificationsActivity.class);
+            // startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navHistory.setOnClickListener(v -> {
+            // Navigate to History
+            // Replace with actual class name
+            // Intent intent = new Intent(this, HistoryActivity.class);
+            // startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navAccount.setOnClickListener(v -> {
+            // Navigate to Account
+            Intent intent = new Intent(this, AccountView.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
     }
 
     private void setupDropdownMenu() {
