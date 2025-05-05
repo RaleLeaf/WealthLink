@@ -20,13 +20,14 @@
             android:exported="false" />
         <activity
             android:name=".UserAccountInfo"
-            android:exported="false" />
+            android:exported="false"/>
+
         <activity
             android:name=".AddAccount"
             android:exported="false" />
         <activity
             android:name=".accountInfo"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".AccountView"
             android:exported="false" />
@@ -53,10 +54,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -14,7 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class AddAccount extends AppCompatActivity {
+public class AddAccount extends AppCompatActivity {//gg
     Button btnAddAccount, btnBack;
     private LinearLayout accountAddedDialog;
     @Override
@@ -37,9 +37,9 @@ public class AddAccount extends AppCompatActivity {
 
             // Auto-hide after 2 seconds
             new Handler(Looper.getMainLooper()).postDelayed(() ->
-                    accountAddedDialog.setVisibility(View.GONE), 2000);
+            {accountAddedDialog.setVisibility(View.GONE);
+                onBackPressed();}, 2000);
 
-            onBackPressed();
         });
 
         btnBack.setOnClickListener(v -> {
