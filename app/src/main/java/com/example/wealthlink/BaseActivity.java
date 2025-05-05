@@ -45,7 +45,7 @@ public class BaseActivity extends AppCompatActivity {
                 navHome.setOnClickListener(v -> navigateTo(wealthLinkMainPage.class));
             }
             if (navGroups != null) {
-                navGroups.setOnClickListener(v -> showToast("Groups clicked"));
+                navGroups.setOnClickListener(v -> navigateTo(GroupListActivity.class));
             }
             if (navNotifications != null) {
                 navNotifications.setOnClickListener(v -> showToast("Notifications clicked"));

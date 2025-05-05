@@ -30,7 +30,6 @@ public class wealthLinkMainPage extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setupDrawer(R.layout.activity_wealth_link_main_page);
-        setContentView(R.layout.activity_wealth_link_main_page);
 
         drawerLayout = findViewById(R.id.drawerLayout);
         ivMenu = findViewById(R.id.ivMenu);
@@ -44,7 +43,6 @@ public class wealthLinkMainPage extends BaseActivity {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
-
         accountPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
