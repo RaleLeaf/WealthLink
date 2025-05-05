@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
@@ -49,8 +50,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/profimg"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                app:shapeAppearance="@style/CircleImage" />
+                android:layout_gravity="center"/>
 
         </RelativeLayout>
 
@@ -87,7 +87,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvChange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Change"
@@ -124,7 +123,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvChange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Change"
@@ -161,7 +159,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvChange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Change"
@@ -198,7 +195,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvChange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Change"
@@ -235,7 +231,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvChange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Change"
@@ -272,7 +267,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvChange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Change"
@@ -309,7 +303,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvChange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Change"
@@ -346,7 +339,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvChange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Change"

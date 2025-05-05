@@ -341,9 +341,6 @@
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
             </LinearLayout>
-
-            <!-- Repeat other drawer items: nav_groups, nav_notifications, nav_history, nav_account -->
-
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
