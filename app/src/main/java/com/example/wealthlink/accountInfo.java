@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class accountInfo extends AppCompatActivity {
-
     private RecyclerView recyclerAccounts;
     private AccountAdapter adapter;
     private List<Account> accountList;

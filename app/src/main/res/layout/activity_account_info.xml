@@ -149,7 +149,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvOtherLabel"
         app:layout_constraintBottom_toTopOf="@id/btnAddAccount" />
 
-    <!-- Add Account Button -->
+
     <Button
         android:id="@+id/btnAddAccount"
         android:layout_width="0dp"

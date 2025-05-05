@@ -14,7 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class AddAccount extends AppCompatActivity {
+public class AddAccount extends AppCompatActivity {//gg
     Button btnAddAccount, btnBack;
     private LinearLayout accountAddedDialog;
     @Override

@@ -140,7 +140,7 @@
 
     <!-- Add Account Button -->
 
-    <!-- Dialog for account added confirmation (hidden by default) -->
+
     <Button
         android:id="@+id/btnAddAccount"
         android:layout_width="0dp"
