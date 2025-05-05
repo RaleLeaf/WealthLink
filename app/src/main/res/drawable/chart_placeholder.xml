@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="120dp"
+    android:viewportWidth="360"
+    android:viewportHeight="120">
+
+    <!-- Background (optional, can be transparent) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M0,0h360v120h-360z" />
+
+    <!-- Line chart path -->
+    <path
+        android:fillColor="#204CAF50"
+        android:pathData="M0,60 Q20,90 60,75 T120,85 T180,45 T240,65 T300,30 T360,35 L360,120 L0,120 Z" />
+
+    <!-- Line chart stroke -->
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M0,60 Q20,90 60,75 T120,85 T180,45 T240,65 T300,30 T360,35" />
+
+</vector>

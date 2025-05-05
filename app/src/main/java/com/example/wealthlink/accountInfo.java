@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class accountInfo extends AppCompatActivity {
-
     private RecyclerView recyclerAccounts;
     private AccountAdapter adapter;
     private List<Account> accountList;
-    Button btnAddAccount;
+    Button btnAddAccount, btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +33,19 @@ public class accountInfo extends AppCompatActivity {
         adapter = new AccountAdapter(accountList);
         recyclerAccounts.setAdapter(adapter);
         btnAddAccount = findViewById(R.id.btnAddAccount);
+        btnBack = findViewById(R.id.btnBack);
 
         btnAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(accountInfo.this, AddAccount.class);
                 startActivity(intent);
+            }
+        });
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }

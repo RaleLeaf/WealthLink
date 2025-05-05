@@ -20,6 +20,17 @@
             android:exported="false" />
         <activity
             android:name=".ReportIssue"
+            android:name=".GroupSettings"
+            android:exported="false"/>
+        <activity
+            android:name=".GroupOverview"
+            android:exported="false"/>
+
+        <activity
+            android:name=".GroupListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GroupDetails"
             android:exported="false" />
         <activity
             android:name=".UserAccountInfo"
@@ -54,11 +65,13 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 
