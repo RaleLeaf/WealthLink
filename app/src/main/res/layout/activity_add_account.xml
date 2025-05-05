@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:id="@+id/main">
+    android:background="#F5F5F5"
+    android:id="@+id/main"
+    android:layout_marginTop="-24dp">
 
-    <!-- Header -->
+    <!-- Top Green Header with rounded corners -->
     <LinearLayout
         android:id="@+id/header"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="100dp"
         android:background="@drawable/header_bg"
-        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
+        android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,142 +27,134 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:background="@android:drawable/ic_menu_revert"
-            android:padding="0dp"
-            android:tint="@android:color/white" />
+            android:tint="@android:color/white"
+            android:padding="0dp" />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:gravity="center"
             android:text="Bank Account Info"
-            android:textColor="@android:color/white"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center" />
     </LinearLayout>
 
-    <!-- Scrollable Content -->
-    <ScrollView
-        android:id="@+id/scrollContent"
+    <!-- Main Section Label - Styled like in first layout -->
+    <TextView
+        android:id="@+id/tvSectionLabel"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/header"
-        app:layout_constraintBottom_toTopOf="@id/btnAddAccount"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="#D8FAD8"
+        android:backgroundTint="#D8FAD8"
+        android:backgroundTintMode="src_in"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Add New Account"
+        android:textColor="#4CAF50"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/header" />
+
+    <!-- Card Form -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardForm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSectionLabel">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="16dp">
 
-            <!-- Section Label -->
-            <TextView
-                android:id="@+id/tvSectionLabel"
+            <!-- Header with icon, title, and menu -->
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:background="#D8FAD8"
-                android:text="Add New Account"
-                android:textColor="#4CAF50"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:layout_marginBottom="16dp" />
+                android:layout_height="wrap_content">
 
-            <!-- Card Form -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardForm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardElevation="6dp">
+                <ImageView
+                    android:id="@+id/ivIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_pic"
+                    android:layout_alignParentStart="true" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_toEndOf="@id/ivIcon"
+                    android:layout_marginStart="12dp">
 
-                    <!-- Header with icon, title, and menu -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Account"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
 
-                        <ImageView
-                            android:id="@+id/ivIcon"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/profile_pic"
-                            android:layout_alignParentStart="true" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_toEndOf="@id/ivIcon"
-                            android:layout_marginStart="12dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="New Account"
-                                android:textStyle="bold"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Visa"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_alignParentEnd="true"
-                            android:src="@android:drawable/ic_menu_more"
-                            app:tint="#999999" />
-                    </RelativeLayout>
-
-                    <!-- Card Holder Name -->
-                    <TextView android:text="Card Holder Name" style="@style/LabelStyle" android:layout_height="match_parent" android:layout_width="match_parent" />
-                    <EditText android:hint="Enter Name"  style="@style/InputStyle" />
-
-                    <!-- Card Number -->
-                    <TextView android:text="Card Number" style="@style/LabelStyle" android:layout_height="match_parent" android:layout_width="match_parent"/>
-                    <EditText android:hint="1234 5678 9012 3456"   style="@style/InputStyle" />
-
-                    <!-- CV CODE -->
-                    <TextView android:text="CV CODE" style="@style/LabelStyle" android:layout_height="match_parent" android:layout_width="match_parent"/>
-                    <EditText android:hint="123"  style="@style/InputStyle" />
-
-                    <!-- Address -->
-                    <TextView android:text="Address" style="@style/LabelStyle" android:layout_height="match_parent" android:layout_width="match_parent"/>
-                    <EditText android:hint="Enter Address"  style="@style/InputStyle" />
-
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Visa"
+                        android:textSize="14sp" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@android:drawable/ic_menu_more"
+                    app:tint="#999999" />
+            </RelativeLayout>
+
+            <!-- Card Holder Name -->
+            <TextView android:text="Card Holder Name" style="@style/LabelStyle" android:layout_height="match_parent" android:layout_width="match_parent" />
+            <EditText android:hint="Enter Name"  style="@style/InputStyle" />
+
+            <!-- Card Number -->
+            <TextView android:text="Card Number" style="@style/LabelStyle" android:layout_height="match_parent" android:layout_width="match_parent"/>
+            <EditText android:hint="1234 5678 9012 3456"   style="@style/InputStyle" />
+
+            <!-- CV CODE -->
+            <TextView android:text="CV CODE" style="@style/LabelStyle" android:layout_height="match_parent" android:layout_width="match_parent"/>
+            <EditText android:hint="123"  style="@style/InputStyle" />
+
+            <!-- Address -->
+            <TextView android:text="Address" style="@style/LabelStyle" android:layout_height="match_parent" android:layout_width="match_parent"/>
+            <EditText android:hint="Enter Address"  style="@style/InputStyle" />
         </LinearLayout>
-    </ScrollView>
+    </androidx.cardview.widget.CardView>
 
     <!-- Add Account Button -->
+
+    <!-- Dialog for account added confirmation (hidden by default) -->
     <Button
         android:id="@+id/btnAddAccount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="+ Add Account"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="36dp"
         android:backgroundTint="#4CAF50"
+        android:text="+ Add Account"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        />
 
     <LinearLayout
         android:id="@+id/accountAddedDialog"
@@ -197,8 +190,4 @@
             android:textColor="#1A1A2E"
             android:layout_marginTop="24dp" />
     </LinearLayout>
-
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

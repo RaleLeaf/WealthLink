@@ -37,9 +37,9 @@ public class AddAccount extends AppCompatActivity {
 
             // Auto-hide after 2 seconds
             new Handler(Looper.getMainLooper()).postDelayed(() ->
-                    accountAddedDialog.setVisibility(View.GONE), 2000);
+            {accountAddedDialog.setVisibility(View.GONE);
+                onBackPressed();}, 2000);
 
-            onBackPressed();
         });
 
         btnBack.setOnClickListener(v -> {
