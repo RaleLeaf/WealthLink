@@ -20,6 +20,8 @@
             android:exported="false" />
         <activity
             android:name=".ReportIssue"
+            android:exported="false"/>
+        <activity
             android:name=".GroupSettings"
             android:exported="false"/>
         <activity
