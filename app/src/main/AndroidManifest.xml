@@ -13,6 +13,12 @@
         android:theme="@style/Theme.WealthLink"
         tools:targetApi="31">
         <activity
+            android:name=".GroupActivityLog"
+            android:exported="false" />
+        <activity
+            android:name=".UserInvestmentGroups"
+            android:exported="false" />
+        <activity
             android:name=".GroupSettingsProfile"
             android:exported="false" />
         <activity
@@ -20,14 +26,13 @@
             android:exported="false" />
         <activity
             android:name=".ReportIssue"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".GroupSettings"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".GroupOverview"
-            android:exported="false"/>
-
+            android:exported="false" />
         <activity
             android:name=".GroupListActivity"
             android:exported="false" />
@@ -67,13 +72,11 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 

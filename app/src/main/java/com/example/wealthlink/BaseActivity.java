@@ -2,13 +2,14 @@ package com.example.wealthlink;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
@@ -21,6 +22,12 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        getWindow().getDecorView().setOnApplyWindowInsetsListener((v, insets) -> {
+            WindowInsetsCompat systemInsets = WindowInsetsCompat.toWindowInsetsCompat(insets);
+            v.setPadding(0, systemInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top, 0, 0);
+            return insets;
+        });
     }
 
     protected void setupDrawer(int layoutResID) {

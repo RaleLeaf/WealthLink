@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Model class for storing group contribution rules
  */
-public class ContributionRules {
+public class ContributionRules extends android.app.Activity {
     private String frequency;
     private String amountType; // "Fixed" or "Flexible"
     private double minimumAmount;
