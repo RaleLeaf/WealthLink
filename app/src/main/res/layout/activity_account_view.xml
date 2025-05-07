@@ -26,46 +26,55 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
-                android:layout_marginTop="0dp"
-                >
+                android:layout_height="260dp">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:src="@drawable/profile_bg"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="50dp"/>
+                    android:scaleType="centerCrop"/>
 
-                <TextView
-                    android:id="@+id/tvAccountName"
-                    android:layout_width="wrap_content"
+                <!-- Use LinearLayout instead of fixed positioning -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Francis Rale"
-                    android:textStyle="bold"
-                    android:textSize="35dp"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="150dp"
-                    android:layout_marginTop="97dp" />
-                <TextView
-                    android:id="@+id/tvAccountEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="raleabrenica@gmail.com"
-                    android:textSize="15dp"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="150dp"
-                    android:layout_marginTop="137dp" />
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_vertical">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/circleImage"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/profimg"
-                    android:layout_marginTop="72dp"
-                    android:layout_marginLeft="16dp"
-                    app:shapeAppearance="@style/CircleImage" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/circleImage"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/profimg"
+                        android:layout_marginStart="16dp"
+                        app:shapeAppearance="@style/CircleImage" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+
+                        <TextView
+                            android:id="@+id/tvAccountName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Francis Rale"
+                            android:textStyle="bold"
+                            android:textSize="30sp"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+
+                        <TextView
+                            android:id="@+id/tvAccountEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="raleabrenica@gmail.com"
+                            android:textSize="16sp"
+                            android:textColor="@color/white"/>
+                    </LinearLayout>
+                </LinearLayout>
             </FrameLayout>
 
             <LinearLayout
