@@ -92,7 +92,7 @@ public class BaseActivity extends AppCompatActivity {
                 navGroups.setOnClickListener(v -> navigateTo(GroupListActivity.class));
             }
             if (navNotifications != null) {
-                navNotifications.setOnClickListener(v -> showToast("Notifications clicked"));
+                navNotifications.setOnClickListener(v -> navigateTo(Notifications.class));
             }
             if (navHistory != null) {
                 navHistory.setOnClickListener(v -> navigateTo(TransactionHistory.class));
