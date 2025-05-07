@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -13,6 +14,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class BaseActivity extends AppCompatActivity {
     protected DrawerLayout drawerLayout;
@@ -47,6 +52,38 @@ public class BaseActivity extends AppCompatActivity {
             LinearLayout navNotifications = navigationView.findViewById(R.id.nav_notifications);
             LinearLayout navHistory = navigationView.findViewById(R.id.nav_history);
             LinearLayout navAccount = navigationView.findViewById(R.id.nav_account);
+
+            TextView userName = findViewById(R.id.user_name);
+            TextView userEmail = findViewById(R.id.user_email);
+
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+            String userId = currentUser.getUid();
+            DocumentReference userDocRef = db.collection("users").document(userId);
+
+            userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    String fname = documentSnapshot.getString("firstName");
+                    String mname = documentSnapshot.getString("middleName");
+                    String lname = documentSnapshot.getString("lastName");
+
+                    if (fname == null) fname = "";
+                    if (lname == null) lname = "";
+
+                    String fullName = fname + (mname != null ? " " + mname : "") + " " + lname;
+                    userName.setText(fullName.trim());
+
+                    String email = currentUser.getEmail();
+                    userEmail.setText(email.trim());
+
+                } else {
+                    // Document does not exist
+                }
+            }).addOnFailureListener(e -> {
+                // Handle any errors
+            });
 
             if (navHome != null) {
                 navHome.setOnClickListener(v -> navigateTo(wealthLinkMainPage.class));
