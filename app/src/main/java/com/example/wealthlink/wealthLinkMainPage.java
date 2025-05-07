@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.view.Gravity;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.google.android.material.navigation.NavigationView;
 
 
@@ -16,15 +18,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wealthlink.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class wealthLinkMainPage extends BaseActivity {
     private RecyclerView rvGroups;
     private DrawerLayout drawerLayout;
     private ImageView ivMenu;
     LinearLayout accountPage;
+
+    TextView wallet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,5 +69,39 @@ public class wealthLinkMainPage extends BaseActivity {
 
         GroupAdapter groupAdapter = new GroupAdapter(groups);
         rvGroups.setAdapter(groupAdapter);
+
+
+
+        wallet = findViewById(R.id.tvWalletAmount);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userDocRef = db.collection("users").document(currentUser.getUid());
+
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String balanceStr = documentSnapshot.getString("balance");
+
+                if (balanceStr != null) {
+                    try {
+                        double balance = Double.parseDouble(balanceStr);
+                        NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
+                        format.setMinimumFractionDigits(2);
+                        format.setMaximumFractionDigits(2);
+
+                        String formattedBalance = "Php " + format.format(balance);
+                        wallet.setText(formattedBalance);
+                    } catch (NumberFormatException e) {
+                        wallet.setText("Error");
+                    }
+                } else {
+                    wallet.setText("Error");
+                }
+            } else {
+                // Document does not exist
+            }
+        }).addOnFailureListener(e -> {
+            // Handle any errors
+        });
     }
 }
