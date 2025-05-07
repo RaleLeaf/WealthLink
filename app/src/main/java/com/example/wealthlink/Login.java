@@ -56,8 +56,6 @@ public class Login extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        Toast.makeText(Login.this, "Success!",
-                                                Toast.LENGTH_SHORT).show();
                                         Intent homeIntent = new Intent(Login.this, wealthLinkMainPage.class);
                                         startActivity(homeIntent);
                                         finish();
