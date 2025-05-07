@@ -116,7 +116,7 @@
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:src="@android:drawable/ic_menu_more"
+                    android:src="@drawable/ic_more"
                     app:tint="#999999" />
             </RelativeLayout>
 

@@ -110,7 +110,7 @@
                 android:id="@+id/ivMainMenu"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_more"
+                android:src="@drawable/ic_more"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:contentDescription="menu"
