@@ -9,7 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
-
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -35,6 +37,7 @@ public class wealthLinkMainPage extends BaseActivity {
     LinearLayout accountPage;
 
     TextView wallet;
+    LinearLayout llWithdraw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class wealthLinkMainPage extends BaseActivity {
         rvGroups = findViewById(R.id.rvGroups);
         NavigationView navigationView = findViewById(R.id.navigation_view);
         accountPage = navigationView.findViewById(R.id.nav_account);
+        llWithdraw = findViewById(R.id.llWithdraw);
 
         ivMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +63,14 @@ public class wealthLinkMainPage extends BaseActivity {
                 Intent viewAccount = new Intent(wealthLinkMainPage.this, AccountView.class);
                 startActivity(viewAccount);
                 drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
+
+        // Add click listener for withdraw button
+        llWithdraw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showWithdrawPopup();
             }
         });
 
@@ -103,5 +115,58 @@ public class wealthLinkMainPage extends BaseActivity {
         }).addOnFailureListener(e -> {
             // Handle any errors
         });
+    }
+
+    // Method to show the withdraw popup
+    // Method to show the withdraw popup
+    private void showWithdrawPopup() {
+        // Create bottom sheet dialog
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+
+        // Set this flag to make it expand fully
+        bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        // Force expanded mode at all times - prevents user from dragging it down
+        bottomSheetDialog.getBehavior().setSkipCollapsed(true);
+
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.withdraw_popup, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Find views in the bottom sheet
+        TextView cashoutOption = bottomSheetView.findViewById(R.id.cashout_option);
+        TextView depositOption = bottomSheetView.findViewById(R.id.deposit_option);
+
+        // Set click listeners for options
+        cashoutOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle cashout option click
+                // Add your cashout logic here
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        depositOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle deposit option click
+                // Add your deposit logic here
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        // Add callback to force expanded state when dialog is shown
+        bottomSheetDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog;
+            View bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            if (bottomSheet != null) {
+                BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                behavior.setSkipCollapsed(true);
+            }
+        });
+
+        // Show the bottom sheet
+        bottomSheetDialog.show();
     }
 }
