@@ -100,7 +100,7 @@ public class SignUp2ndStep extends AppCompatActivity {
                                             user.put("middleName", middleName);
                                             user.put("lastName", lastName);
                                             user.put("address", null);
-                                            user.put("balance", 1000);
+                                            user.put("balance", 1000000);
                                             user.put("birthday", null);
                                             user.put("gender", null);
                                             user.put("phoneNumber", null);
