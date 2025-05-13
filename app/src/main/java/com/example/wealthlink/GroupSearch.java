@@ -16,7 +16,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import android.util.Log;
+
+
 public class GroupSearch extends AppCompatActivity {
+    private static final String TAG = "GroupSearch";
+
 
     private RecyclerView rvGroups;
     private GroupAdapter adapter;
@@ -56,7 +67,22 @@ public class GroupSearch extends AppCompatActivity {
 
         // Set up button click listeners
         setupButtons();
-    }
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("groups")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
     private void setupGroups() {
         // Initialize data lists
