@@ -14,9 +14,23 @@ import java.util.List;
 public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountViewHolder> {
 
     private List<Account> accountList;
+    private OnAccountClickListener listener;
 
+    // Interface for click events
+    public interface OnAccountClickListener {
+        void onAccountClick(Account account);
+    }
+
+    // Constructor with listener
+    public AccountAdapter(List<Account> accountList, OnAccountClickListener listener) {
+        this.accountList = accountList;
+        this.listener = listener;
+    }
+
+    // Keep the original constructor for backward compatibility
     public AccountAdapter(List<Account> accountList) {
         this.accountList = accountList;
+        this.listener = null;
     }
 
     @NonNull
@@ -33,6 +47,16 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         holder.tvAccountHolder.setText(account.getAccountHolder());
         // You can set an actual image later
         holder.ivAccountIcon.setImageResource(R.drawable.profile_pic);
+
+        // Set click listener for the item
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onAccountClick(account);
+                }
+            }
+        });
     }
 
     @Override

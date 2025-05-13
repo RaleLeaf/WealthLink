@@ -19,6 +19,12 @@
             android:name=".DepositAccount"
             android:exported="false" />
         <activity
+            android:name=".WithdrawAccount"
+            android:exported="false" />
+        <activity
+            android:name=".WithdrawAmount"
+            android:exported="false" />
+        <activity
             android:name=".JoinGroupActivity"
             android:exported="false" />
         <activity

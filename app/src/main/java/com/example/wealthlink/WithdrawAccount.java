@@ -38,8 +38,17 @@ public class WithdrawAccount extends AppCompatActivity {
         accountList.add(new Account("BPI Debit 2110", "Kurt Zander Kaw"));
         accountList.add(new Account("Metrobank 8723", "Kurt Zander Kaw"));
 
-        // Set up adapter
-        adapter = new AccountAdapter(accountList);
+        // Set up adapter with click listener
+        adapter = new AccountAdapter(accountList, new AccountAdapter.OnAccountClickListener() {
+            @Override
+            public void onAccountClick(Account account) {
+                Intent intent = new Intent(WithdrawAccount.this, WithdrawAmount.class);
+                // Pass account details to WithdrawAmount
+                intent.putExtra("ACCOUNT_NAME", account.getBankName());
+                intent.putExtra("ACCOUNT_HOLDER", account.getAccountHolder());
+                startActivity(intent);
+            }
+        });
         recyclerAccounts.setAdapter(adapter);
 
         // Add Account view
@@ -56,6 +65,17 @@ public class WithdrawAccount extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish(); // Go back to previous activity
+            }
+        });
+
+        // Set click listener for the main account card
+        findViewById(R.id.cardMainAccount).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WithdrawAccount.this, WithdrawAmount.class);
+                intent.putExtra("ACCOUNT_NAME", "BDO Credit 5295");
+                intent.putExtra("ACCOUNT_HOLDER", "Kurt Zander Kaw");
+                startActivity(intent);
             }
         });
     }

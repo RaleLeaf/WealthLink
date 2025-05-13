@@ -165,11 +165,46 @@
         android:id="@+id/btnDeposit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Withdraw"
+        android:text="Deposit"
         android:layout_alignParentBottom="true"
         android:layout_margin="24dp"
         android:backgroundTint="#4CAF50"
         android:textColor="@android:color/white"
         android:elevation="2dp"
         android:padding="16dp" />
+
+    <LinearLayout
+        android:id="@+id/depositDialog"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@android:color/white"
+        android:padding="24dp"
+        android:visibility="gone"
+        android:elevation="8dp"
+        android:layout_margin="16dp"
+        android:clipToOutline="true"
+        android:outlineProvider="background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <View
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center"
+            android:backgroundTint="#A5F3AC"
+            android:background="@android:color/holo_green_light" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Account Added!"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A2E"
+            android:layout_marginTop="24dp" />
+    </LinearLayout>
 </RelativeLayout>
