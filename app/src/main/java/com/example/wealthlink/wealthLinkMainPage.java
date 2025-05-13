@@ -25,12 +25,22 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import android.util.Log;
+import com.google.firebase.firestore.FieldPath;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class wealthLinkMainPage extends BaseActivity {
+    private static final String TAG = "WealthLinkMainPage";
+
     private RecyclerView rvGroups;
     private DrawerLayout drawerLayout;
     private ImageView ivMenu;
@@ -74,18 +84,9 @@ public class wealthLinkMainPage extends BaseActivity {
             }
         });
 
-        rvGroups.setLayoutManager(new LinearLayoutManager(this));
-        List<Group> groups = new ArrayList<>();
-        groups.add(new Group("Lively Inc.", "21:21", "$432"));
-        groups.add(new Group("Lively Inc.", "21:21", "$432"));
-
-        GroupAdapter groupAdapter = new GroupAdapter(groups);
-        rvGroups.setAdapter(groupAdapter);
-
-
 
         wallet = findViewById(R.id.tvWalletAmount);
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance(); //Initialize Cloud Firestore
         FirebaseUser currentUser = mAuth.getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userDocRef = db.collection("users").document(currentUser.getUid());
@@ -115,6 +116,118 @@ public class wealthLinkMainPage extends BaseActivity {
         }).addOnFailureListener(e -> {
             // Handle any errors
         });
+
+
+        // GROUPS THE USER IS PART OF
+        //FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        //FirebaseUser currentUser = mAuth.getCurrentUser();
+        //FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        if (currentUser != null) {
+            String currentUserId = currentUser.getUid();
+
+            // 1. Query "groupMemberships" for the user's memberships
+            db.collection("groupMemberships")
+                    .whereEqualTo("userID", currentUserId)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                // Store groupIds and their respective investmentAmounts
+                                final List<String> groupIds = new ArrayList<>();
+                                final java.util.Map<String, String> groupInvestments = new java.util.HashMap<>();
+
+                                for (QueryDocumentSnapshot membershipDocument : task.getResult()) {
+                                    // Get the groupID from each membership document
+                                    String groupId = membershipDocument.getString("groupID");
+                                    if (groupId != null) {
+                                        groupIds.add(groupId);
+
+                                        // Store the investment amount for this group
+                                        Object investmentAmount = membershipDocument.get("investmentAmount");
+                                        if (investmentAmount != null) {
+                                            // Format the amount as currency
+                                            String formattedAmount = "$" + investmentAmount.toString();
+                                            groupInvestments.put(groupId, formattedAmount);
+                                        }
+                                    }
+                                }
+
+                                Log.d(TAG, "Group IDs found: " + groupIds.size() + " - " + groupIds);
+
+                                // 2. Get the "group" documents based on the groupIDs
+                                if (!groupIds.isEmpty()) {
+                                    // Firestore allows querying by multiple values in an array using whereIn
+                                    db.collection("groups")
+                                            .whereIn(FieldPath.documentId(), groupIds) // Query by document ID
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        List<Group> userGroups = new ArrayList<>();
+                                                        for (QueryDocumentSnapshot groupDocument : task.getResult()) {
+                                                            try {
+                                                                // Extract fields to match the actual Firestore document structure
+                                                                String name = groupDocument.getString("groupName"); // Changed from "name" to "groupName"
+                                                                String groupId = groupDocument.getId();
+
+                                                                // Get the investmentAmount we stored earlier
+                                                                String amount = groupInvestments.containsKey(groupId) ?
+                                                                        groupInvestments.get(groupId) : "$0";
+
+                                                                // Get the current time as fallback since there's no "time" field
+                                                                String time = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(new java.util.Date());
+
+                                                                if (name != null) {
+                                                                    // Create Group object manually
+                                                                    Group group = new Group(name, time, amount);
+                                                                    userGroups.add(group);
+                                                                    Log.d(TAG, "Added group: " + name + " with amount: " + amount);
+                                                                }
+                                                            } catch (Exception e) {
+                                                                Log.e(TAG, "Error parsing group document", e);
+                                                            }
+                                                        }
+
+                                                        // 3. Populate the RecyclerView
+                                                        runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                // Set up the RecyclerView with the retrieved groups
+                                                                rvGroups.setLayoutManager(new LinearLayoutManager(wealthLinkMainPage.this));
+                                                                GroupAdapter groupAdapter = new GroupAdapter(userGroups);
+                                                                rvGroups.setAdapter(groupAdapter);
+
+                                                                Log.d(TAG, "Successfully retrieved user's groups: " + userGroups.size());
+
+                                                                // If no groups were found, display dummy data
+                                                                if (userGroups.isEmpty()) {
+                                                                    Log.e(TAG, "User has not joined any groups.", task.getException());
+                                                            }
+                                                        });
+
+                                                    } else {
+                                                        Log.e(TAG, "Error getting user's groups: ", task.getException());
+                                                    }
+                                                }
+                                            });
+                                } else {
+                                    // The user is not a member of any groups
+                                    Log.d(TAG, "User is not a member of any groups.");
+                                }
+
+                            } else {
+                                Log.e(TAG, "Error getting group memberships: ", task.getException());
+                            }
+                        }
+                    });
+        } else {
+            Log.e(TAG, "No current user found");
+        }
+
+
     }
 
     // Method to show the withdraw popup
