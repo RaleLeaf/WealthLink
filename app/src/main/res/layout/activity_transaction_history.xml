@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:background="#FFFFFF">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,22 +51,24 @@
                 android:gravity="center" />
 
             <TextView
+                android:id="@+id/tvTotalBalance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Php 289,321.12"
+                android:text="Php 0.00"
                 android:textSize="30dp"
                 android:textStyle="bold"
                 android:gravity="center" />
         </LinearLayout>
 
         <EditText
+            android:id="@+id/etSearchTransaction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="#AAA"
             android:padding="12dp"
             android:layout_margin="20dp"
             android:background="@drawable/rounded_search_bg"
-            android:text="Search Transaction" />
+            android:hint="Search Transaction" />
 
         <LinearLayout
             android:layout_width="match_parent"
