@@ -69,15 +69,22 @@ public class GroupSearch extends AppCompatActivity {
         setupButtons();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("groups")
+        db.collection("groups") // Change "cities" to "groups"
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Here you can process each group document
+                                // document.getId() gives you the document ID
+                                // document.getData() gives you the document data as a Map
                                 Log.d(TAG, document.getId() + " => " + document.getData());
+
+                                // You would typically create a Group object from the document data
+                                // and add it to a list that your RecyclerView adapter uses.
                             }
+                            // After the loop, update your RecyclerView adapter with the list of groups.
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
