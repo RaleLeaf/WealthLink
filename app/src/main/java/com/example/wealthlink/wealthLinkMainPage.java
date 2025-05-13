@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -84,7 +83,6 @@ public class wealthLinkMainPage extends BaseActivity {
             }
         });
 
-
         wallet = findViewById(R.id.tvWalletAmount);
         FirebaseAuth mAuth = FirebaseAuth.getInstance(); //Initialize Cloud Firestore
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -117,12 +115,7 @@ public class wealthLinkMainPage extends BaseActivity {
             // Handle any errors
         });
 
-
         // GROUPS THE USER IS PART OF
-        //FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        //FirebaseUser currentUser = mAuth.getCurrentUser();
-        //FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         if (currentUser != null) {
             String currentUserId = currentUser.getUid();
 
@@ -205,9 +198,9 @@ public class wealthLinkMainPage extends BaseActivity {
                                                                 // If no groups were found, display dummy data
                                                                 if (userGroups.isEmpty()) {
                                                                     Log.e(TAG, "User has not joined any groups.", task.getException());
+                                                                }
                                                             }
                                                         });
-
                                                     } else {
                                                         Log.e(TAG, "Error getting user's groups: ", task.getException());
                                                     }
@@ -226,11 +219,8 @@ public class wealthLinkMainPage extends BaseActivity {
         } else {
             Log.e(TAG, "No current user found");
         }
-
-
     }
 
-    // Method to show the withdraw popup
     // Method to show the withdraw popup
     private void showWithdrawPopup() {
         // Create bottom sheet dialog

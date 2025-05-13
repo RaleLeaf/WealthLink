@@ -20,6 +20,7 @@ public class NavBar extends AppCompatActivity {
     private LinearLayout navNotifications;
     private LinearLayout navHistory;
     private LinearLayout navAccount;
+    private LinearLayout navLogout;
 
     // Profile
     private ImageView profileImage;
@@ -40,6 +41,7 @@ public class NavBar extends AppCompatActivity {
         navNotifications = findViewById(R.id.nav_notifications);
         navHistory = findViewById(R.id.nav_history);
         navAccount = findViewById(R.id.nav_account);
+        navLogout = findViewById(R.id.nav_logout);
 
         //profile
         profileImage = findViewById(R.id.profile_image);

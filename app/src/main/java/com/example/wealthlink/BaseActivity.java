@@ -23,6 +23,7 @@ public class BaseActivity extends AppCompatActivity {
     protected DrawerLayout drawerLayout;
     protected NavigationView navigationView;
     protected ImageView ivMenu;
+    protected FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class BaseActivity extends AppCompatActivity {
             v.setPadding(0, systemInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top, 0, 0);
             return insets;
         });
+        mAuth = FirebaseAuth.getInstance();
     }
 
     protected void setupDrawer(int layoutResID) {
@@ -52,6 +54,7 @@ public class BaseActivity extends AppCompatActivity {
             LinearLayout navNotifications = navigationView.findViewById(R.id.nav_notifications);
             LinearLayout navHistory = navigationView.findViewById(R.id.nav_history);
             LinearLayout navAccount = navigationView.findViewById(R.id.nav_account);
+            LinearLayout navLogout = navigationView.findViewById(R.id.nav_logout);
 
             TextView userName = findViewById(R.id.user_name);
             TextView userEmail = findViewById(R.id.user_email);
@@ -100,6 +103,9 @@ public class BaseActivity extends AppCompatActivity {
             if (navAccount != null) {
                 navAccount.setOnClickListener(v -> navigateTo(AccountView.class));
             }
+            if (navLogout != null) {
+                navLogout.setOnClickListener(v -> logoutUser());
+            }
         }
     }
 
@@ -110,6 +116,17 @@ public class BaseActivity extends AppCompatActivity {
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    protected void logoutUser() {
+        mAuth.signOut();
+
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     protected void showToast(String message) {
