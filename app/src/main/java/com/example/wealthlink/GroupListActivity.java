@@ -28,7 +28,7 @@ import java.util.List;
 
 public class GroupListActivity extends BaseActivity {
     private static final String TAG = "GroupListActivity";
-    Button joinGroup;
+    Button joinGroup, createGroup;
     private RecyclerView rvGroups;
     private NavigationView navigationView;
 
@@ -42,6 +42,8 @@ public class GroupListActivity extends BaseActivity {
         navigationView = findViewById(R.id.navigation_view);
         LinearLayout accountPage = navigationView.findViewById(R.id.nav_account);
         rvGroups = findViewById(R.id.rvGroups);
+        joinGroup = findViewById(R.id.btnJoinViaInvite);
+        createGroup = findViewById(R.id.btnCreateGroup);
 
         // Set up menu button click listener
         ivMenu.setOnClickListener(new View.OnClickListener() {
@@ -62,12 +64,20 @@ public class GroupListActivity extends BaseActivity {
         });
 
         // Set up join group button click listener
-        joinGroup = findViewById(R.id.btnJoinViaInvite);
         joinGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(GroupListActivity.this, JoinGroupActivity.class);
-                startActivity(intent);
+                Intent jintent = new Intent(GroupListActivity.this, JoinGroupActivity.class);
+                startActivity(jintent);
+            }
+        });
+
+        createGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cintent = new Intent(GroupListActivity.this, CreateGroupPortfolio.class);
+                startActivity(cintent);
+                finish();
             }
         });
 
