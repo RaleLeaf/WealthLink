@@ -48,9 +48,11 @@ public class GroupDetails extends AppCompatActivity {
         // Initialize UI components
         tvGroupName = findViewById(R.id.tvGroupName);
         tvGroupDescription = findViewById(R.id.tvGroupDescription);
-//        tvTotalInvestment = findViewById(R.id.tvTotalInvestment);
-//        tvMemberCount = findViewById(R.id.tvMemberCount);
-//        tvUserInvestment = findViewById(R.id.tvUserInvestment);
+
+        // Uncomment these lines to properly initialize the TextViews
+        tvTotalInvestment = findViewById(R.id.tvTotalInvestment);
+        tvMemberCount = findViewById(R.id.tvMemberCount);
+        tvUserInvestment = findViewById(R.id.tvUserInvestment);
 
         btnDeposit = findViewById(R.id.btnDeposit);
         btnWithdraw = findViewById(R.id.btnWithdraw);
@@ -92,6 +94,18 @@ public class GroupDetails extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh data when returning to this activity
+        if (groupID != null && !groupID.isEmpty()) {
+            loadGroupData(groupID);
+            if (currentUser != null) {
+                loadUserInvestmentData(groupID, currentUser.getUid());
+            }
+        }
+    }
+
     private void loadGroupData(String groupID) {
         if (groupID == null || groupID.isEmpty()) {
             Log.e(TAG, "Invalid group ID");
@@ -103,7 +117,7 @@ public class GroupDetails extends AppCompatActivity {
             if (documentSnapshot.exists()) {
                 // Extract group data
                 String name = documentSnapshot.getString("groupName");
-                String description = documentSnapshot.getString("groupDescription");
+                String description = documentSnapshot.getString("description");
                 Object totalInvestmentObj = documentSnapshot.get("totalInvestment");
 
                 // Update UI with group data
@@ -118,38 +132,49 @@ public class GroupDetails extends AppCompatActivity {
                 }
 
                 // Format and display total investment
-                if (totalInvestmentObj != null) {
-                    try {
-                        double totalInvestment = 0;
-                        if (totalInvestmentObj instanceof Number) {
-                            totalInvestment = ((Number) totalInvestmentObj).doubleValue();
-                        } else if (totalInvestmentObj instanceof String) {
-                            totalInvestment = Double.parseDouble((String) totalInvestmentObj);
-                        }
+                if (tvTotalInvestment != null) {
+                    if (totalInvestmentObj != null) {
+                        try {
+                            double totalInvestment = 0;
+                            if (totalInvestmentObj instanceof Number) {
+                                totalInvestment = ((Number) totalInvestmentObj).doubleValue();
+                            } else if (totalInvestmentObj instanceof String) {
+                                String valueStr = (String) totalInvestmentObj;
+                                if (!valueStr.isEmpty()) {
+                                    totalInvestment = Double.parseDouble(valueStr);
+                                }
+                            }
 
-                        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
-                        String formattedAmount = format.format(totalInvestment);
-                        tvTotalInvestment.setText("Total Investment: " + formattedAmount);
-                    } catch (NumberFormatException e) {
-                        Log.e(TAG, "Error parsing total investment", e);
-                        tvTotalInvestment.setText("Total Investment: Unknown");
+                            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
+                            String formattedAmount = format.format(totalInvestment);
+                            tvTotalInvestment.setText("" + formattedAmount);
+                        } catch (NumberFormatException e) {
+                            Log.e(TAG, "Error parsing total investment", e);
+                            tvTotalInvestment.setText("Unknown");
+                        }
+                    } else {
+                        tvTotalInvestment.setText("Php 0.00");
                     }
                 } else {
-                    tvTotalInvestment.setText("Total Investment: $0.00");
+                    Log.w(TAG, "tvTotalInvestment is null - make sure it exists in your layout");
                 }
 
                 // Count number of members in this group
-                db.collection("groupMemberships")
-                        .whereEqualTo("groupID", groupID)
-                        .get()
-                        .addOnSuccessListener(querySnapshot -> {
-                            int memberCount = querySnapshot.size();
-                            tvMemberCount.setText("Members: " + memberCount);
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e(TAG, "Error counting members", e);
-                            tvMemberCount.setText("Members: Unknown");
-                        });
+                if (tvMemberCount != null) {
+                    db.collection("groupMemberships")
+                            .whereEqualTo("groupID", groupID)
+                            .get()
+                            .addOnSuccessListener(querySnapshot -> {
+                                int memberCount = querySnapshot.size();
+                                tvMemberCount.setText("" + memberCount);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "Error counting members", e);
+                                tvMemberCount.setText("Unknown");
+                            });
+                } else {
+                    Log.w(TAG, "tvMemberCount is null - make sure it exists in your layout");
+                }
 
                 Log.d(TAG, "Group data loaded successfully");
             } else {
@@ -177,26 +202,43 @@ public class GroupDetails extends AppCompatActivity {
                                 if (investmentAmount instanceof Number) {
                                     amount = ((Number) investmentAmount).doubleValue();
                                 } else if (investmentAmount instanceof String) {
-                                    amount = Double.parseDouble((String) investmentAmount);
+                                    String valueStr = (String) investmentAmount;
+                                    if (!valueStr.isEmpty()) {
+                                        amount = Double.parseDouble(valueStr);
+                                    }
                                 }
 
-                                NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
-                                String formattedAmount = format.format(amount);
-                                tvUserInvestment.setText("Your Investment: " + formattedAmount);
+                                if (tvUserInvestment != null) {
+                                    NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
+                                    String formattedAmount = format.format(amount);
+                                    tvUserInvestment.setText("" + formattedAmount);
+                                } else {
+                                    Log.w(TAG, "tvUserInvestment is null - make sure it exists in your layout");
+                                }
                             } catch (NumberFormatException e) {
                                 Log.e(TAG, "Error parsing investment amount", e);
-                                tvUserInvestment.setText("Your Investment: Unknown");
+                                if (tvUserInvestment != null) {
+                                    tvUserInvestment.setText("Your Investment: Unknown");
+                                }
                             }
                         } else {
-                            tvUserInvestment.setText("Your Investment: $0.00");
+                            if (tvUserInvestment != null) {
+                                tvUserInvestment.setText("Your Investment: Php 0.00");
+                            }
                         }
                     } else {
-                        tvUserInvestment.setText("Your Investment: $0.00");
+                        if (tvUserInvestment != null) {
+                            tvUserInvestment.setText("Your Investment: Php 0.00");
+                        } else {
+                            Log.w(TAG, "tvUserInvestment is null - make sure it exists in your layout");
+                        }
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error loading user investment data", e);
-                    tvUserInvestment.setText("Your Investment: Error");
+                    if (tvUserInvestment != null) {
+                        tvUserInvestment.setText("Your Investment: Error");
+                    }
                 });
     }
 }

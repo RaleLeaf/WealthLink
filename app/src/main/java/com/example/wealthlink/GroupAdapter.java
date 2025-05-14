@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,7 +37,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     public GroupAdapter(List<Group> groups, Map<String, String> groupIdsMap, Context context) {
         this.groups = groups;
-        this.groupIdsMap = groupIdsMap;
+        this.groupIdsMap = groupIdsMap != null ? groupIdsMap : new HashMap<>();
         this.context = context;
     }
 
@@ -84,6 +85,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                     checkMembershipAndNavigate(groupId);
                 } else {
                     Log.e(TAG, "Group ID not found for group: " + group.getName());
+                    // Show a toast message to the user
+                    Toast.makeText(context,
+                            "Could not load group details. Please try again.",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -100,6 +105,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
         if (currentUser == null) {
             Log.e(TAG, "No current user found");
+            Toast.makeText(context, "Please sign in to view group details", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -117,21 +123,31 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                         if (task.isSuccessful()) {
                             boolean isMember = !task.getResult().isEmpty();
 
-                            if (isMember) {
-                                // User is a member, navigate to GroupDetails
-                                Intent intent = new Intent(context, GroupDetails.class);
-                                intent.putExtra("groupID", groupId);
-                                context.startActivity(intent);
-                                Log.d(TAG, "Navigating to GroupDetails for groupID: " + groupId);
-                            } else {
-                                // User is not a member, navigate to GroupActivityLog
-                                Intent intent = new Intent(context, GroupActivityLog.class);
-                                intent.putExtra("groupID", groupId);
-                                context.startActivity(intent);
-                                Log.d(TAG, "Navigating to GroupActivityLog for groupID: " + groupId);
+                            try {
+                                if (isMember) {
+                                    // User is a member, navigate to GroupDetails
+                                    Intent intent = new Intent(context, GroupDetails.class);
+                                    intent.putExtra("groupID", groupId);
+                                    context.startActivity(intent);
+                                    Log.d(TAG, "Navigating to GroupDetails for groupID: " + groupId);
+                                } else {
+                                    // User is not a member, navigate to GroupActivityLog
+                                    Intent intent = new Intent(context, GroupActivityLog.class);
+                                    intent.putExtra("groupID", groupId);
+                                    context.startActivity(intent);
+                                    Log.d(TAG, "Navigating to GroupActivityLog for groupID: " + groupId);
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error starting activity", e);
+                                Toast.makeText(context,
+                                        "Error opening group. Please try again.",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             Log.e(TAG, "Error checking membership: ", task.getException());
+                            Toast.makeText(context,
+                                    "Error connecting to server. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

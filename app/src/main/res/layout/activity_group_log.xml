@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".GroupOverview">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -139,6 +138,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Group info card -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardGroupInfo"
             android:layout_width="match_parent"
@@ -174,7 +174,7 @@
                     app:layout_constraintTop_toTopOf="@id/ivGroupLogo" />
 
                 <TextView
-                    android:id="@+id/tvGroupTicker"
+                    android:id="@+id/tvGroupDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -184,6 +184,64 @@
                     app:layout_constraintStart_toEndOf="@id/ivGroupLogo"
                     app:layout_constraintTop_toBottomOf="@id/tvGroupName" />
 
+                <!-- ADD: Investment statistics section -->
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="#E0E0E0"
+                    app:layout_constraintTop_toBottomOf="@id/ivGroupLogo" />
+
+                <!-- Total Investment -->
+                <TextView
+                    android:id="@+id/labelTotalInvestment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Total Investment"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider" />
+
+                <TextView
+                    android:id="@+id/tvTotalInvestment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="$10,000.00"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/labelTotalInvestment"
+                    app:layout_constraintTop_toBottomOf="@+id/labelTotalInvestment" />
+
+                <!-- Member Count -->
+                <TextView
+                    android:id="@+id/labelMemberCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Members"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider" />
+
+                <TextView
+                    android:id="@+id/tvMemberCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="12"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@+id/labelMemberCount"
+                    app:layout_constraintTop_toBottomOf="@+id/labelMemberCount" />
+
+
                 <Button
                     android:id="@+id/btnJoined"
                     android:layout_width="match_parent"
@@ -192,9 +250,12 @@
                     android:backgroundTint="#4CAF50"
                     android:text="Join Group"
                     android:textColor="@android:color/white"
-                    app:layout_constraintTop_toBottomOf="@id/ivGroupLogo" />
+                    app:layout_constraintTop_toBottomOf="@id/tvMemberCount" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
+
+
+
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardPerformance"
