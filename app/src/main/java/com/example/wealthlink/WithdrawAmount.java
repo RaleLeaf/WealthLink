@@ -48,14 +48,9 @@ public class WithdrawAmount extends AppCompatActivity {
         tvTotalAmount = findViewById(R.id.tvTotalAmount);
         tvFee = findViewById(R.id.tvFeeAmount);
 
-        // Get account details from intent
-        String accountName = getIntent().getStringExtra("ACCOUNT_NAME");
-        String accountHolder = getIntent().getStringExtra("ACCOUNT_HOLDER");
 
-        // Display account details if available
-        if (accountName != null) {
-            tvMainBankName.setText(accountName);
-        }
+        String groupID = getIntent().getStringExtra("groupID");
+
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance(); //Initialize Cloud Firestore
         FirebaseUser currentUser = mAuth.getCurrentUser();

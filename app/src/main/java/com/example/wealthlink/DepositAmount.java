@@ -48,6 +48,7 @@ public class DepositAmount extends AppCompatActivity {
             showDepositSuccessDialog();
         });
 
+        String groupID = getIntent().getStringExtra("groupID");
 
         tvBalance = findViewById(R.id.tvBalance);
         FirebaseAuth mAuth = FirebaseAuth.getInstance(); //Initialize Cloud Firestore
