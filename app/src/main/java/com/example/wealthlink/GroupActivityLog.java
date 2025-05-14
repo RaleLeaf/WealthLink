@@ -51,6 +51,8 @@ public class GroupActivityLog extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
 
+    private Button btnJoinGroup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,16 +70,6 @@ public class GroupActivityLog extends AppCompatActivity {
         tvTotalInvestment = findViewById(R.id.tvTotalInvestment);
         tvMemberCount = findViewById(R.id.tvMemberCount);
         btnBack = findViewById(R.id.btnBack);
-        btnMore = findViewById(R.id.btnMore);
-        btnJoined = findViewById(R.id.btnJoined);
-
-        // Initialize dropdown components
-        cardDropdown = findViewById(R.id.cardDropdown);
-        cardDropdown.setVisibility(View.GONE); // Ensure it's initially hidden
-
-        tvSettings = findViewById(R.id.tvSettings);
-        tvReportIssue = findViewById(R.id.tvReportIssue);
-        tvLeaveGroup = findViewById(R.id.tvLeaveGroup);
 
         // Set up back button click listener
         btnBack.setOnClickListener(v -> finish()); // Go back to previous activity
@@ -112,6 +104,13 @@ public class GroupActivityLog extends AppCompatActivity {
             Toast.makeText(GroupActivityLog.this, "Leave Group clicked", Toast.LENGTH_SHORT).show();
             cardDropdown.setVisibility(View.GONE);
             isDropdownVisible = false;
+        });
+
+        btnJoinGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
         });
 
         // Get the group ID from the intent
