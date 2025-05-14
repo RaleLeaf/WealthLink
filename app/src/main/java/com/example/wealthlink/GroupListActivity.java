@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
@@ -81,7 +82,7 @@ public class GroupListActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent cintent = new Intent(GroupListActivity.this, CreateGroupPortfolio.class);
                 startActivity(cintent);
-                finish();
+                // Removed finish() to prevent activity stack issues
             }
         });
 
