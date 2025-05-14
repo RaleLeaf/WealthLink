@@ -70,13 +70,13 @@ public class GroupDetails extends AppCompatActivity {
         });
 
         btnWithdraw.setOnClickListener(v -> {
-            Intent intent = new Intent(GroupDetails.this, WithdrawAccount.class);
+            Intent intent = new Intent(GroupDetails.this, WithdrawAmount.class);
             intent.putExtra("groupID", groupID);
             startActivity(intent);
         });
 
         btnDeposit.setOnClickListener(v -> {
-            Intent intent = new Intent(GroupDetails.this, DepositAccount.class);
+            Intent intent = new Intent(GroupDetails.this, DepositAmount.class);
             intent.putExtra("groupID", groupID);
             startActivity(intent);
         });

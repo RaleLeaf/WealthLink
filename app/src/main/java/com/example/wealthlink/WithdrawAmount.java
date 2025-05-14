@@ -16,9 +16,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class WithdrawAmount extends AppCompatActivity {
     Button btnBack, btnWithdraw;
-    TextView tvMainBankName, tvMainAccountHolder;
+    TextView tvMainBankName, tvBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +43,7 @@ public class WithdrawAmount extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         btnWithdraw = findViewById(R.id.btnWithdraw);
         tvMainBankName = findViewById(R.id.tvMainBankName);
-        tvMainAccountHolder = findViewById(R.id.tvMainAccountHolder);
+        tvBalance = findViewById(R.id.tvBalance);
 
         // Get account details from intent
         String accountName = getIntent().getStringExtra("ACCOUNT_NAME");
@@ -46,9 +54,36 @@ public class WithdrawAmount extends AppCompatActivity {
             tvMainBankName.setText(accountName);
         }
 
-        if (accountHolder != null) {
-            tvMainAccountHolder.setText(accountHolder);
-        }
+        FirebaseAuth mAuth = FirebaseAuth.getInstance(); //Initialize Cloud Firestore
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userDocRef = db.collection("users").document(currentUser.getUid());
+
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String balanceStr = documentSnapshot.getString("balance");
+
+                if (balanceStr != null) {
+                    try {
+                        double balance = Double.parseDouble(balanceStr);
+                        NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
+                        format.setMinimumFractionDigits(2);
+                        format.setMaximumFractionDigits(2);
+
+                        String formattedBalance = "Php " + format.format(balance);
+                        tvBalance.setText(formattedBalance);
+                    } catch (NumberFormatException e) {
+                        tvBalance.setText("Error");
+                    }
+                } else {
+                    tvBalance.setText("Error");
+                }
+            } else {
+                // Document does not exist
+            }
+        }).addOnFailureListener(e -> {
+            // Handle any errors
+        });
 
         // Set back button click listener
         btnBack.setOnClickListener(v -> {

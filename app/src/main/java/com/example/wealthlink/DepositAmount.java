@@ -16,8 +16,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class DepositAmount extends AppCompatActivity {
     Button btnBack,btnDeposit;
+    TextView tvBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,39 @@ public class DepositAmount extends AppCompatActivity {
         });
         btnDeposit.setOnClickListener(v -> {
             showDepositSuccessDialog();
+        });
+
+
+        tvBalance = findViewById(R.id.tvBalance);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance(); //Initialize Cloud Firestore
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userDocRef = db.collection("users").document(currentUser.getUid());
+
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String balanceStr = documentSnapshot.getString("balance");
+
+                if (balanceStr != null) {
+                    try {
+                        double balance = Double.parseDouble(balanceStr);
+                        NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
+                        format.setMinimumFractionDigits(2);
+                        format.setMaximumFractionDigits(2);
+
+                        String formattedBalance = "Php " + format.format(balance);
+                        tvBalance.setText(formattedBalance);
+                    } catch (NumberFormatException e) {
+                        tvBalance.setText("Error");
+                    }
+                } else {
+                    tvBalance.setText("Error");
+                }
+            } else {
+                // Document does not exist
+            }
+        }).addOnFailureListener(e -> {
+            // Handle any errors
         });
     }
     private void showDepositSuccessDialog() {
