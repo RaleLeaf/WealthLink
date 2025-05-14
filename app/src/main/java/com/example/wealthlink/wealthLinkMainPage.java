@@ -144,9 +144,23 @@ public class wealthLinkMainPage extends BaseActivity {
                                         // Store the investment amount for this group
                                         Object investmentAmount = membershipDocument.get("investmentAmount");
                                         if (investmentAmount != null) {
-                                            // Format the amount as currency
-                                            String formattedAmount = "$" + investmentAmount.toString();
-                                            groupInvestments.put(groupId, formattedAmount);
+                                            // Format the amount as currency with 2 decimal places
+                                            try {
+                                                double amount = 0;
+                                                if (investmentAmount instanceof Number) {
+                                                    amount = ((Number) investmentAmount).doubleValue();
+                                                } else {
+                                                    amount = Double.parseDouble(investmentAmount.toString());
+                                                }
+                                                NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
+                                                format.setMinimumFractionDigits(2);
+                                                format.setMaximumFractionDigits(2);
+                                                String formattedAmount = "₱" + format.format(amount);
+                                                groupInvestments.put(groupId, formattedAmount);
+                                            } catch (NumberFormatException e) {
+                                                Log.e(TAG, "Error formatting investment amount", e);
+                                                groupInvestments.put(groupId, "₱0.00");
+                                            }
                                         }
                                     }
                                 }
@@ -174,7 +188,7 @@ public class wealthLinkMainPage extends BaseActivity {
 
                                                                 // Get the investmentAmount we stored earlier
                                                                 String amount = groupInvestments.containsKey(groupId) ?
-                                                                        groupInvestments.get(groupId) : "$0";
+                                                                        groupInvestments.get(groupId) : "₱0.00";
 
                                                                 // Get the current time as fallback since there's no "time" field
                                                                 String time = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(new java.util.Date());

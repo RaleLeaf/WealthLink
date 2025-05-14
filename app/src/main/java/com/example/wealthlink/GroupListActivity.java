@@ -23,9 +23,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GroupListActivity extends BaseActivity {
@@ -104,14 +106,28 @@ public class GroupListActivity extends BaseActivity {
                                     String name = groupDocument.getString("groupName");
                                     String groupId = groupDocument.getId();
 
-                                    // For displaying group amount, you might want to get group total amount
-                                    // if available or use a placeholder
-                                    String amount = "$0"; // Default placeholder
+                                    // Format the totalInvestment with exactly two decimal places
+                                    String amount = "₱0.00"; // Default placeholder with 2 decimal places
 
                                     // Check if there's a totalInvestment field
                                     Object totalInvestment = groupDocument.get("totalInvestment");
                                     if (totalInvestment != null) {
-                                        amount = "$" + totalInvestment.toString();
+                                        try {
+                                            double investmentValue = 0;
+                                            if (totalInvestment instanceof Number) {
+                                                investmentValue = ((Number) totalInvestment).doubleValue();
+                                            } else {
+                                                investmentValue = Double.parseDouble(totalInvestment.toString());
+                                            }
+
+                                            // Format with 2 decimal places
+                                            NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
+                                            format.setMinimumFractionDigits(2);
+                                            format.setMaximumFractionDigits(2);
+                                            amount = "₱" + format.format(investmentValue);
+                                        } catch (NumberFormatException e) {
+                                            Log.e(TAG, "Error parsing totalInvestment", e);
+                                        }
                                     }
 
                                     // Get current time as group time
