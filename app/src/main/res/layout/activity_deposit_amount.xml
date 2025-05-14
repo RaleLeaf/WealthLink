@@ -159,8 +159,77 @@
             android:textColor="#000000" />
     </RelativeLayout>
 
+    <!-- Total and fees -->
+
 
     <!-- Withdraw Button -->
+
+    <RelativeLayout
+        android:id="@+id/feesAndtotal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/amountInputContainer"
+        android:layout_marginTop="102dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@android:color/white"
+        android:elevation="1dp">
+
+        <TextView
+            android:id="@+id/tvFeeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Fee"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvFeeAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/tvFeeLabel"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:text="$0.00"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/tvFeeLabel"
+            android:layout_marginTop="16dp"
+            android:background="#E0E0E0" />
+
+
+        <TextView
+            android:id="@+id/tvTotalLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Total"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvTotalAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/tvTotalLabel"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:text="$0.00"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
     <Button
         android:id="@+id/btnDeposit"
         android:layout_width="match_parent"
