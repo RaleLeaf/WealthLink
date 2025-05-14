@@ -24,7 +24,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GroupListActivity extends BaseActivity {
     private static final String TAG = "GroupListActivity";
@@ -94,6 +96,7 @@ public class GroupListActivity extends BaseActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             List<Group> allGroups = new ArrayList<>();
+                            Map<String, String> groupNameToIdMap = new HashMap<>();
 
                             for (QueryDocumentSnapshot groupDocument : task.getResult()) {
                                 try {
@@ -105,6 +108,12 @@ public class GroupListActivity extends BaseActivity {
                                     // if available or use a placeholder
                                     String amount = "$0"; // Default placeholder
 
+                                    // Check if there's a totalInvestment field
+                                    Object totalInvestment = groupDocument.get("totalInvestment");
+                                    if (totalInvestment != null) {
+                                        amount = "$" + totalInvestment.toString();
+                                    }
+
                                     // Get current time as group time
                                     String time = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT)
                                             .format(new java.util.Date());
@@ -113,7 +122,9 @@ public class GroupListActivity extends BaseActivity {
                                         // Create Group object
                                         Group group = new Group(name, time, amount);
                                         allGroups.add(group);
-                                        Log.d(TAG, "Added group: " + name);
+                                        // Store the mapping of group name to group ID
+                                        groupNameToIdMap.put(name, groupId);
+                                        Log.d(TAG, "Added group: " + name + " with ID: " + groupId);
                                     }
                                 } catch (Exception e) {
                                     Log.e(TAG, "Error parsing group document", e);
@@ -126,7 +137,7 @@ public class GroupListActivity extends BaseActivity {
                                 public void run() {
                                     // Set up RecyclerView with retrieved groups
                                     rvGroups.setLayoutManager(new LinearLayoutManager(GroupListActivity.this));
-                                    GroupAdapter groupAdapter = new GroupAdapter(allGroups);
+                                    GroupAdapter groupAdapter = new GroupAdapter(allGroups, groupNameToIdMap, GroupListActivity.this);
                                     rvGroups.setAdapter(groupAdapter);
 
                                     Log.d(TAG, "Successfully retrieved all groups: " + allGroups.size());

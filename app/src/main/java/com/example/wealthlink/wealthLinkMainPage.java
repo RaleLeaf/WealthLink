@@ -2,6 +2,7 @@ package com.example.wealthlink;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.view.Gravity;
@@ -34,8 +35,10 @@ import com.google.firebase.firestore.FieldPath;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class wealthLinkMainPage extends BaseActivity {
     private static final String TAG = "WealthLinkMainPage";
@@ -84,9 +87,6 @@ public class wealthLinkMainPage extends BaseActivity {
             }
         });
 
-        // Add click listener for withdraw button
-
-
         wallet = findViewById(R.id.tvWalletAmount);
         FirebaseAuth mAuth = FirebaseAuth.getInstance(); //Initialize Cloud Firestore
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -133,7 +133,7 @@ public class wealthLinkMainPage extends BaseActivity {
                             if (task.isSuccessful()) {
                                 // Store groupIds and their respective investmentAmounts
                                 final List<String> groupIds = new ArrayList<>();
-                                final java.util.Map<String, String> groupInvestments = new java.util.HashMap<>();
+                                final Map<String, String> groupInvestments = new HashMap<>();
 
                                 for (QueryDocumentSnapshot membershipDocument : task.getResult()) {
                                     // Get the groupID from each membership document
@@ -164,10 +164,12 @@ public class wealthLinkMainPage extends BaseActivity {
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     if (task.isSuccessful()) {
                                                         List<Group> userGroups = new ArrayList<>();
+                                                        Map<String, String> groupNameToIdMap = new HashMap<>();
+
                                                         for (QueryDocumentSnapshot groupDocument : task.getResult()) {
                                                             try {
                                                                 // Extract fields to match the actual Firestore document structure
-                                                                String name = groupDocument.getString("groupName"); // Changed from "name" to "groupName"
+                                                                String name = groupDocument.getString("groupName");
                                                                 String groupId = groupDocument.getId();
 
                                                                 // Get the investmentAmount we stored earlier
@@ -181,7 +183,9 @@ public class wealthLinkMainPage extends BaseActivity {
                                                                     // Create Group object manually
                                                                     Group group = new Group(name, time, amount);
                                                                     userGroups.add(group);
-                                                                    Log.d(TAG, "Added group: " + name + " with amount: " + amount);
+                                                                    // Store the mapping of group name to group ID
+                                                                    groupNameToIdMap.put(name, groupId);
+                                                                    Log.d(TAG, "Added group: " + name + " with ID: " + groupId + " and amount: " + amount);
                                                                 }
                                                             } catch (Exception e) {
                                                                 Log.e(TAG, "Error parsing group document", e);
@@ -194,7 +198,7 @@ public class wealthLinkMainPage extends BaseActivity {
                                                             public void run() {
                                                                 // Set up the RecyclerView with the retrieved groups
                                                                 rvGroups.setLayoutManager(new LinearLayoutManager(wealthLinkMainPage.this));
-                                                                GroupAdapter groupAdapter = new GroupAdapter(userGroups);
+                                                                GroupAdapter groupAdapter = new GroupAdapter(userGroups, groupNameToIdMap, wealthLinkMainPage.this);
                                                                 rvGroups.setAdapter(groupAdapter);
 
                                                                 Log.d(TAG, "Successfully retrieved user's groups: " + userGroups.size());
@@ -224,7 +228,4 @@ public class wealthLinkMainPage extends BaseActivity {
             Log.e(TAG, "No current user found");
         }
     }
-
-
-
 }

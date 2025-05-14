@@ -178,7 +178,7 @@
                     app:layout_constraintTop_toTopOf="@id/ivGroupLogo" />
 
                 <TextView
-                    android:id="@+id/tvGroupTicker"
+                    android:id="@+id/tvGroupDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
