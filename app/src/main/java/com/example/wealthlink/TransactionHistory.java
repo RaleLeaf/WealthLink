@@ -1,10 +1,7 @@
 package com.example.wealthlink;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.core.view.GravityCompat;
@@ -48,7 +45,7 @@ public class TransactionHistory extends BaseActivity {
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         ImageView ivMenu = findViewById(R.id.ivMenu);
         NavigationView navigationView = findViewById(R.id.navigation_view);
-        LinearLayout accountPage = navigationView.findViewById(R.id.nav_account);
+
         ivMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         loadUserBalance();
@@ -61,23 +58,24 @@ public class TransactionHistory extends BaseActivity {
         DocumentReference userDocRef = db.collection("users").document(currentUser.getUid());
         userDocRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                String balanceStr = documentSnapshot.getString("balance");
+                Object balanceObj = documentSnapshot.get("balance");
+                double balance = 0.0;
 
-                if (balanceStr != null) {
+                if (balanceObj instanceof String) {
                     try {
-                        double balance = Double.parseDouble(balanceStr);
-                        NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
-                        format.setMinimumFractionDigits(2);
-                        format.setMaximumFractionDigits(2);
-
-                        String formattedBalance = "Php " + format.format(balance);
-                        tvTotalBalance.setText(formattedBalance);
+                        balance = Double.parseDouble((String) balanceObj);
                     } catch (NumberFormatException e) {
-                        tvTotalBalance.setText("Php 0.00");
+                        // Handle parsing error
                     }
-                } else {
-                    tvTotalBalance.setText("Php 0.00");
+                } else if (balanceObj instanceof Number) {
+                    balance = ((Number) balanceObj).doubleValue();
                 }
+
+                NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("en", "PH"));
+                String formattedBalance = format.format(balance);
+                tvTotalBalance.setText(formattedBalance);
+            } else {
+                tvTotalBalance.setText("Php 0.00");
             }
         }).addOnFailureListener(e -> {
             tvTotalBalance.setText("Php 0.00");
@@ -97,36 +95,51 @@ public class TransactionHistory extends BaseActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-                        int totalTransactions = task.getResult().size();
-                        final int[] processedCount = {0};
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Get transaction data with safer access methods
                             String groupID = document.getString("groupID");
-                            String amount = document.getString("amount");
+
+                            // Handle amount - could be String or Number
+                            Object amountObj = document.get("amount");
+                            String amount = "0.00";
+                            if (amountObj instanceof String) {
+                                amount = (String) amountObj;
+                            } else if (amountObj instanceof Number) {
+                                amount = String.format(Locale.US, "%.2f", ((Number) amountObj).doubleValue());
+                            }
+
                             String transactionType = document.getString("transactionType");
                             Date transactionDate = document.getDate("transactionDate");
 
+                            // Default values if data is missing
                             String formattedDate = transactionDate != null
                                     ? dateFormat.format(transactionDate)
                                     : "Unknown Date";
 
-                            String formattedAmount = "Php " + (amount != null ? amount : "0.00");
+                            String formattedAmount = "Php " + amount;
 
-                            boolean isIncome = "withdrawal".equalsIgnoreCase(transactionType);
+                            // Determine if transaction is income based on transactionType
+                            // Assuming "deposit" is income and everything else is expense
+                            boolean isIncome = "deposit".equalsIgnoreCase(transactionType);
 
+                            // Add transaction to list with placeholder group name
+                            final String finalGroupID = groupID;
                             final String finalFormattedDate = formattedDate;
                             final String finalFormattedAmount = formattedAmount;
                             final boolean finalIsIncome = isIncome;
 
                             if (groupID != null && !groupID.isEmpty()) {
+                                // Try to get group name
                                 db.collection("groups").document(groupID)
                                         .get()
                                         .addOnSuccessListener(groupDoc -> {
                                             String groupName = groupDoc.exists() ?
                                                     groupDoc.getString("groupName") :
-                                                    "Unknown Group";
+                                                    "Group " + finalGroupID;
 
-                                            if (groupName == null) groupName = "Group " + groupID;
+                                            if (groupName == null) groupName = "Group " + finalGroupID;
+
                                             transactions.add(new transactionItemClass(
                                                     groupName,
                                                     finalFormattedDate,
@@ -134,54 +147,55 @@ public class TransactionHistory extends BaseActivity {
                                                     finalIsIncome
                                             ));
 
-                                            processedCount[0]++;
-
-                                            if (processedCount[0] == totalTransactions) {
-                                                TransactionAdapter adapter = new TransactionAdapter(transactions);
-                                                recyclerView.setAdapter(adapter);
-                                            }
+                                            // Update adapter after adding item
+                                            updateAdapter(recyclerView, transactions);
                                         })
                                         .addOnFailureListener(e -> {
+                                            // Fallback if group fetch fails
                                             transactions.add(new transactionItemClass(
-                                                    "Group " + groupID,
+                                                    "Group " + finalGroupID,
                                                     finalFormattedDate,
                                                     finalFormattedAmount,
                                                     finalIsIncome
                                             ));
 
-                                            processedCount[0]++;
-
-                                            if (processedCount[0] == totalTransactions) {
-                                                TransactionAdapter adapter = new TransactionAdapter(transactions);
-                                                recyclerView.setAdapter(adapter);
-                                            }
+                                            // Update adapter after adding item
+                                            updateAdapter(recyclerView, transactions);
                                         });
                             } else {
+                                // If no group ID
                                 transactions.add(new transactionItemClass(
-                                        "Unknown Group",
+                                        "Personal Transaction",
                                         finalFormattedDate,
                                         finalFormattedAmount,
                                         finalIsIncome
                                 ));
 
-                                processedCount[0]++;
-
-                                if (processedCount[0] == totalTransactions) {
-                                    TransactionAdapter adapter = new TransactionAdapter(transactions);
-                                    recyclerView.setAdapter(adapter);
-                                }
+                                // Update adapter after adding item
+                                updateAdapter(recyclerView, transactions);
                             }
                         }
                     } else {
+                        // No transactions found
                         transactions.add(new transactionItemClass("No transactions found", "", "", false));
-                        TransactionAdapter adapter = new TransactionAdapter(transactions);
-                        recyclerView.setAdapter(adapter);
+                        updateAdapter(recyclerView, transactions);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    transactions.add(new transactionItemClass("Failed to load transactions: " + e.getMessage(), "", "", false));
-                    TransactionAdapter adapter = new TransactionAdapter(transactions);
-                    recyclerView.setAdapter(adapter);
+                    transactions.add(new transactionItemClass("Failed to load transactions", "", "", false));
+                    updateAdapter(recyclerView, transactions);
                 });
+    }
+
+    private void updateAdapter(RecyclerView recyclerView, List<transactionItemClass> transactions) {
+        // If the adapter is already set with our data, update it
+        TransactionAdapter existingAdapter = (TransactionAdapter) recyclerView.getAdapter();
+        if (existingAdapter != null) {
+            existingAdapter.updateTransactions(transactions);
+        } else {
+            // Otherwise create a new adapter
+            TransactionAdapter adapter = new TransactionAdapter(new ArrayList<>(transactions));
+            recyclerView.setAdapter(adapter);
+        }
     }
 }
