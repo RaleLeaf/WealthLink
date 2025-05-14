@@ -3,6 +3,7 @@ package com.example.wealthlink;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,8 @@ public class GroupActivityLog extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
 
+    private Button btnJoinGroup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +52,20 @@ public class GroupActivityLog extends AppCompatActivity {
         tvTotalInvestment = findViewById(R.id.tvTotalInvestment);
         tvMemberCount = findViewById(R.id.tvMemberCount);
         btnBack = findViewById(R.id.btnBack);
+        btnJoinGroup = findViewById(R.id.btnJoinGroup);
 
         // Set up back button click listener
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish(); // Go back to previous activity
+            }
+        });
+
+        btnJoinGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
