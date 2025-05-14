@@ -185,7 +185,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="16dp"
-                            android:text="Investment Groups"
+                            android:text="Portfolio"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -223,7 +223,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="16dp"
-                            android:text="Investment Groups"
+                            android:text="Bank Account Info"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -261,7 +261,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="16dp"
-                            android:text="Investment Groups"
+                            android:text="Settings"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
