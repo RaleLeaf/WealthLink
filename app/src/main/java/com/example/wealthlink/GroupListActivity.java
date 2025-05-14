@@ -2,18 +2,36 @@ package com.example.wealthlink;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GroupListActivity extends BaseActivity {
+    private static final String TAG = "GroupListActivity";
     Button joinGroup;
+    private RecyclerView rvGroups;
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,8 +39,19 @@ public class GroupListActivity extends BaseActivity {
 
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         ImageView ivMenu = findViewById(R.id.ivMenu);
+        navigationView = findViewById(R.id.navigation_view);
         LinearLayout accountPage = navigationView.findViewById(R.id.nav_account);
+        rvGroups = findViewById(R.id.rvGroups);
 
+        // Set up menu button click listener
+        ivMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        // Set up account page navigation
         accountPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,6 +61,7 @@ public class GroupListActivity extends BaseActivity {
             }
         });
 
+        // Set up join group button click listener
         joinGroup = findViewById(R.id.btnJoinViaInvite);
         joinGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,5 +70,68 @@ public class GroupListActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+        // Initialize Firebase Auth and Firestore
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Fetch all groups from the Firestore "groups" collection
+        db.collection("groups")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Group> allGroups = new ArrayList<>();
+
+                            for (QueryDocumentSnapshot groupDocument : task.getResult()) {
+                                try {
+                                    // Extract group name from document
+                                    String name = groupDocument.getString("groupName");
+                                    String groupId = groupDocument.getId();
+
+                                    // For displaying group amount, you might want to get group total amount
+                                    // if available or use a placeholder
+                                    String amount = "$0"; // Default placeholder
+
+                                    // Get current time as group time
+                                    String time = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT)
+                                            .format(new java.util.Date());
+
+                                    if (name != null) {
+                                        // Create Group object
+                                        Group group = new Group(name, time, amount);
+                                        allGroups.add(group);
+                                        Log.d(TAG, "Added group: " + name);
+                                    }
+                                } catch (Exception e) {
+                                    Log.e(TAG, "Error parsing group document", e);
+                                }
+                            }
+
+                            // Update UI on the main thread
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Set up RecyclerView with retrieved groups
+                                    rvGroups.setLayoutManager(new LinearLayoutManager(GroupListActivity.this));
+                                    GroupAdapter groupAdapter = new GroupAdapter(allGroups);
+                                    rvGroups.setAdapter(groupAdapter);
+
+                                    Log.d(TAG, "Successfully retrieved all groups: " + allGroups.size());
+
+                                    // Handle empty state
+                                    if (allGroups.isEmpty()) {
+                                        Log.d(TAG, "No groups found in the database.");
+                                        // You might want to show an empty state message here
+                                    }
+                                }
+                            });
+                        } else {
+                            Log.e(TAG, "Error getting groups: ", task.getException());
+                        }
+                    }
+                });
     }
 }
