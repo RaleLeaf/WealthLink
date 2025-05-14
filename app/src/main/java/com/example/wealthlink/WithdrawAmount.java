@@ -26,7 +26,7 @@ import java.util.Locale;
 
 public class WithdrawAmount extends AppCompatActivity {
     Button btnBack, btnWithdraw;
-    TextView tvMainBankName, tvBalance;
+    TextView tvMainBankName, tvBalance, tvTotalAmount, tvFee, tvAvailableBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +44,9 @@ public class WithdrawAmount extends AppCompatActivity {
         btnWithdraw = findViewById(R.id.btnWithdraw);
         tvMainBankName = findViewById(R.id.tvMainBankName);
         tvBalance = findViewById(R.id.tvBalance);
+        tvAvailableBalance = findViewById(R.id.tvAvailableBalance);
+        tvTotalAmount = findViewById(R.id.tvTotalAmount);
+        tvFee = findViewById(R.id.tvFeeAmount);
 
         // Get account details from intent
         String accountName = getIntent().getStringExtra("ACCOUNT_NAME");
