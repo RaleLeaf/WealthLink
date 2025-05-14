@@ -13,17 +13,24 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class GroupActivityLog extends AppCompatActivity {
     private static final String TAG = "GroupActivityLog";
 
     private TextView tvGroupName;
-    private TextView tvGroupDescription;
+    private TextView tvGroupDescription, tvTotalInvestment, tvMemberCount;
     private ImageButton btnBack;
     private String groupID;
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +40,14 @@ public class GroupActivityLog extends AppCompatActivity {
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
 
         // Initialize UI components
         tvGroupName = findViewById(R.id.tvGroupName);
         tvGroupDescription = findViewById(R.id.tvGroupDescription);
+        tvTotalInvestment = findViewById(R.id.tvTotalInvestment);
+        tvMemberCount = findViewById(R.id.tvMemberCount);
         btnBack = findViewById(R.id.btnBack);
 
         // Set up back button click listener
@@ -77,12 +88,11 @@ public class GroupActivityLog extends AppCompatActivity {
                 // Extract group data
                 String name = documentSnapshot.getString("groupName");
                 String description = documentSnapshot.getString("description");
+                Object totalInvestmentObj = documentSnapshot.get("totalInvestment");
 
                 // Update UI with group data
                 if (name != null) {
                     tvGroupName.setText(name);
-                } else {
-                    tvGroupName.setText("Unknown Group");
                 }
 
                 if (description != null) {
@@ -91,20 +101,59 @@ public class GroupActivityLog extends AppCompatActivity {
                     tvGroupDescription.setText("No description available");
                 }
 
+                // Format and display total investment
+                if (tvTotalInvestment != null) {
+                    if (totalInvestmentObj != null) {
+                        try {
+                            double totalInvestment = 0;
+                            if (totalInvestmentObj instanceof Number) {
+                                totalInvestment = ((Number) totalInvestmentObj).doubleValue();
+                            } else if (totalInvestmentObj instanceof String) {
+                                String valueStr = (String) totalInvestmentObj;
+                                if (!valueStr.isEmpty()) {
+                                    totalInvestment = Double.parseDouble(valueStr);
+                                }
+                            }
+
+                            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
+                            String formattedAmount = format.format(totalInvestment);
+                            tvTotalInvestment.setText(formattedAmount);
+                        } catch (NumberFormatException e) {
+                            Log.e(TAG, "Error parsing total investment", e);
+                            tvTotalInvestment.setText("Unknown");
+                        }
+                    } else {
+                        tvTotalInvestment.setText("$0.00");
+                    }
+                } else {
+                    Log.w(TAG, "tvTotalInvestment is null - make sure it exists in your layout");
+                }
+
+                // Count number of members in this group
+                if (tvMemberCount != null) {
+                    db.collection("groupMemberships")
+                            .whereEqualTo("groupID", groupID)
+                            .get()
+                            .addOnSuccessListener(querySnapshot -> {
+                                int memberCount = querySnapshot.size();
+                                tvMemberCount.setText(String.valueOf(memberCount));
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "Error counting members", e);
+                                tvMemberCount.setText("Unknown");
+                            });
+                } else {
+                    Log.w(TAG, "tvMemberCount is null - make sure it exists in your layout");
+                }
+
                 Log.d(TAG, "Group data loaded successfully");
             } else {
                 Log.e(TAG, "Group document does not exist");
                 tvGroupName.setText("Error: Group not found");
-                Toast.makeText(GroupActivityLog.this,
-                        "This group no longer exists",
-                        Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(e -> {
             Log.e(TAG, "Error loading group data", e);
             tvGroupName.setText("Error loading group");
-            Toast.makeText(GroupActivityLog.this,
-                    "Error connecting to server. Please try again later.",
-                    Toast.LENGTH_SHORT).show();
         });
     }
 }
