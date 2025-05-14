@@ -181,15 +181,15 @@ public class GroupDetails extends AppCompatActivity {
                                 }
                             }
 
-                            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
-                            String formattedAmount = format.format(totalInvestment);
+                            NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
+                            String formattedAmount = "₱" + format.format(totalInvestment);
                             tvTotalInvestment.setText(formattedAmount);
                         } catch (NumberFormatException e) {
                             Log.e(TAG, "Error parsing total investment", e);
                             tvTotalInvestment.setText("Unknown");
                         }
                     } else {
-                        tvTotalInvestment.setText("$0.00");
+                        tvTotalInvestment.setText("₱0.00");
                     }
                 } else {
                     Log.w(TAG, "tvTotalInvestment is null - make sure it exists in your layout");
