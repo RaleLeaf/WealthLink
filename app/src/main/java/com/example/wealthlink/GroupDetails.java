@@ -1,15 +1,19 @@
 package com.example.wealthlink;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -32,11 +36,16 @@ public class GroupDetails extends AppCompatActivity {
     private static final String TAG = "GroupDetails";
 
     Button btnDeposit, btnWithdraw;
-    ImageButton btnBack;
+    ImageButton btnBack, btnMore;
     private RecyclerView recyclerActivities;
     private ActivityAdapter activityAdapter;
     private List<Activity> activityList;
     TextView tvGroupName, tvGroupDescription, tvTotalInvestment, tvMemberCount, tvUserInvestment;
+
+    // Dropdown menu elements
+    private CardView cardDropdown;
+    private boolean isDropdownVisible = false;
+    private TextView tvSettings, tvReportIssue, tvLeaveGroup;
 
     private String groupID;
     private FirebaseFirestore db;
@@ -64,6 +73,15 @@ public class GroupDetails extends AppCompatActivity {
         btnDeposit = findViewById(R.id.btnDeposit);
         btnWithdraw = findViewById(R.id.btnWithdraw);
         btnBack = findViewById(R.id.btnBack);
+        btnMore = findViewById(R.id.btnMore);
+
+        // Initialize dropdown components
+        cardDropdown = findViewById(R.id.cardDropdown);
+        cardDropdown.setVisibility(View.GONE); // Ensure it's initially hidden
+
+        tvSettings = findViewById(R.id.tvSettings);
+        tvReportIssue = findViewById(R.id.tvReportIssue);
+        tvLeaveGroup = findViewById(R.id.tvLeaveGroup);
 
         // Set up RecyclerView
         recyclerActivities = findViewById(R.id.recyclerActivities);
@@ -103,6 +121,30 @@ public class GroupDetails extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Set up dropdown menu click listeners
+        btnMore.setOnClickListener(v -> toggleDropdown());
+
+        tvSettings.setOnClickListener(v -> {
+            // Handle settings click
+            Toast.makeText(GroupDetails.this, "Settings clicked", Toast.LENGTH_SHORT).show();
+            cardDropdown.setVisibility(View.GONE);
+            isDropdownVisible = false;
+        });
+
+        tvReportIssue.setOnClickListener(v -> {
+            Intent intent = new Intent(GroupDetails.this, ReportIssue.class);
+            startActivity(intent);
+            cardDropdown.setVisibility(View.GONE);
+            isDropdownVisible = false;
+        });
+
+        tvLeaveGroup.setOnClickListener(v -> {
+            // Handle leave group click
+            Toast.makeText(GroupDetails.this, "Leave Group clicked", Toast.LENGTH_SHORT).show();
+            cardDropdown.setVisibility(View.GONE);
+            isDropdownVisible = false;
+        });
+
         // Get the group ID from the intent
         if (getIntent().hasExtra("groupID")) {
             groupID = getIntent().getStringExtra("groupID");
@@ -128,6 +170,27 @@ public class GroupDetails extends AppCompatActivity {
             // Refresh activities data
             loadActivitiesData();
         }
+    }
+
+    // Toggle dropdown visibility
+    private void toggleDropdown() {
+        isDropdownVisible = !isDropdownVisible;
+        cardDropdown.setVisibility(isDropdownVisible ? View.VISIBLE : View.GONE);
+    }
+
+    // Handle clicks outside the dropdown to dismiss it
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (isDropdownVisible && event.getAction() == MotionEvent.ACTION_DOWN) {
+            Rect dropdownRect = new Rect();
+            cardDropdown.getGlobalVisibleRect(dropdownRect);
+
+            if (!dropdownRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                cardDropdown.setVisibility(View.GONE);
+                isDropdownVisible = false;
+            }
+        }
+        return super.dispatchTouchEvent(event);
     }
 
     private void loadActivitiesData() {
