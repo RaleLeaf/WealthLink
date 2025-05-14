@@ -5,6 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context=".AccountView">
 
     <ScrollView
@@ -81,21 +82,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="16dp">
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp">
 
+                <!-- Updated card style to match second image -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/contact_info_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="6dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="0dp"
                     app:cardCornerRadius="12dp"
-                    app:cardBackgroundColor="#F5F3F3">
+                    app:strokeWidth="0.5dp"
+                    app:strokeColor="#20000000"
+                    app:cardBackgroundColor="@android:color/white">
 
                     <LinearLayout
                         android:id="@+id/contact_info"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="56dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="16dp">
@@ -115,24 +120,26 @@
                             android:textStyle="bold" />
 
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:src="@drawable/ic_arrow_right"
                             android:tint="#666666" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="6dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="0dp"
                     app:cardCornerRadius="12dp"
-                    app:cardBackgroundColor="#F5F3F3"
-                    >
+                    app:strokeWidth="0.5dp"
+                    app:strokeColor="#20000000"
+                    app:cardBackgroundColor="@android:color/white">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="56dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="16dp">
@@ -152,8 +159,8 @@
                             android:textStyle="bold" />
 
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:src="@drawable/ic_arrow_right"
                             android:tint="#666666" />
                     </LinearLayout>
@@ -163,14 +170,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="6dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="0dp"
                     app:cardCornerRadius="12dp"
-                    app:cardBackgroundColor="#F5F3F3"
-                    >
+                    app:strokeWidth="0.5dp"
+                    app:strokeColor="#20000000"
+                    app:cardBackgroundColor="@android:color/white">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="56dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="16dp">
@@ -190,8 +198,8 @@
                             android:textStyle="bold" />
 
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:src="@drawable/ic_arrow_right"
                             android:tint="#666666" />
                     </LinearLayout>
@@ -201,14 +209,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="6dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="0dp"
                     app:cardCornerRadius="12dp"
-                    app:cardBackgroundColor="#F5F3F3"
-                    >
+                    app:strokeWidth="0.5dp"
+                    app:strokeColor="#20000000"
+                    app:cardBackgroundColor="@android:color/white">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="56dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="16dp">
@@ -228,8 +237,8 @@
                             android:textStyle="bold" />
 
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:src="@drawable/ic_arrow_right"
                             android:tint="#666666" />
                     </LinearLayout>
@@ -239,14 +248,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="6dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="0dp"
                     app:cardCornerRadius="12dp"
-                    app:cardBackgroundColor="#F5F3F3"
-                    >
+                    app:strokeWidth="0.5dp"
+                    app:strokeColor="#20000000"
+                    app:cardBackgroundColor="@android:color/white">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="56dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="16dp">
@@ -266,8 +276,8 @@
                             android:textStyle="bold" />
 
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:src="@drawable/ic_arrow_right"
                             android:tint="#666666" />
                     </LinearLayout>
