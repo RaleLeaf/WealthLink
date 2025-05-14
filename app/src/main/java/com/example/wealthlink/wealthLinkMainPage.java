@@ -46,7 +46,6 @@ public class wealthLinkMainPage extends BaseActivity {
     LinearLayout accountPage;
 
     TextView wallet;
-    LinearLayout llWithdraw, llDeposit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +57,7 @@ public class wealthLinkMainPage extends BaseActivity {
         rvGroups = findViewById(R.id.rvGroups);
         NavigationView navigationView = findViewById(R.id.navigation_view);
         accountPage = navigationView.findViewById(R.id.nav_account);
-        llWithdraw = findViewById(R.id.llWithdraw);
-        llDeposit = findViewById(R.id.llDeposit);
+
 
         ivMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,20 +75,7 @@ public class wealthLinkMainPage extends BaseActivity {
         });
 
         // Add click listener for withdraw button
-        llWithdraw.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(wealthLinkMainPage.this, WithdrawAccount.class);
-                startActivity(intent);
-            }
-        });
-        llDeposit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(wealthLinkMainPage.this, DepositAccount.class);
-                startActivity(intent);
-            }
-        });
+
 
         wallet = findViewById(R.id.tvWalletAmount);
         FirebaseAuth mAuth = FirebaseAuth.getInstance(); //Initialize Cloud Firestore
