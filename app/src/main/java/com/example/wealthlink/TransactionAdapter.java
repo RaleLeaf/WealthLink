@@ -10,8 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.wealthlink.transactionItemClass;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
@@ -19,7 +18,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     private List<transactionItemClass> transactionList;
 
     public TransactionAdapter(List<transactionItemClass> transactionList) {
-        this.transactionList = transactionList;
+        this.transactionList = new ArrayList<>(transactionList);
     }
 
     @NonNull
@@ -39,16 +38,23 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         if (item.isIncome()) {
             holder.textAmount.setTextColor(Color.parseColor("#00AA00")); // green
-            holder.imageIcon.setImageResource(R.drawable.ic_income); // MAKE THE IMAGE FOR GREEN UP ARROW / PROFIT
+            holder.imageIcon.setImageResource(R.drawable.ic_income);
         } else {
             holder.textAmount.setTextColor(Color.parseColor("#FF0000")); // red
-            holder.imageIcon.setImageResource(R.drawable.ic_expense); // MAKE THE IMAGE FOR RED DOWN ARROW / LOSS
+            holder.imageIcon.setImageResource(R.drawable.ic_expense);
         }
     }
 
     @Override
     public int getItemCount() {
         return transactionList.size();
+    }
+
+    // Method to update transaction list
+    public void updateTransactions(List<transactionItemClass> newTransactions) {
+        // Create a new list to avoid modification issues
+        this.transactionList = new ArrayList<>(newTransactions);
+        notifyDataSetChanged();
     }
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {

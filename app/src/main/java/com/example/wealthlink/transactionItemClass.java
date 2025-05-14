@@ -13,9 +13,19 @@ public class transactionItemClass {
         this.isIncome = isIncome;
     }
 
-    public String getTitle() { return title; }
-    public String getDate() { return date; }
-    public String getAmount() { return amount; }
-    public boolean isIncome() { return isIncome; }
-}
+    public String getTitle() {
+        return title;
+    }
 
+    public String getDate() {
+        return date;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public boolean isIncome() {
+        return isIncome;
+    }
+}
