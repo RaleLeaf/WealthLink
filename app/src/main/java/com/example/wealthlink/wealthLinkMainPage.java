@@ -45,7 +45,7 @@ public class wealthLinkMainPage extends BaseActivity {
     private ImageView ivMenu;
     LinearLayout accountPage;
 
-    TextView wallet;
+    TextView wallet, viewAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,16 @@ public class wealthLinkMainPage extends BaseActivity {
         rvGroups = findViewById(R.id.rvGroups);
         NavigationView navigationView = findViewById(R.id.navigation_view);
         accountPage = navigationView.findViewById(R.id.nav_account);
+        viewAll = findViewById(R.id.tvViewAll);
+
+        viewAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(wealthLinkMainPage.this, GroupListActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
 
         ivMenu.setOnClickListener(new View.OnClickListener() {

@@ -63,7 +63,7 @@
             android:layout_marginTop="4dp"
             android:text="Php 00,000.00"
             android:textColor="#000000"
-            android:textSize="24sp"
+            android:textSize="40sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvWalletLabel" />
@@ -98,7 +98,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Groups"
+                android:text="My Groups"
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:textStyle="bold" />
