@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,13 +23,19 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class GroupDetails extends AppCompatActivity {
+
     private static final String TAG = "GroupDetails";
 
     Button btnDeposit, btnWithdraw;
     ImageButton btnBack;
+    private RecyclerView recyclerActivities;
+    private ActivityAdapter activityAdapter;
+    private List<Activity> activityList;
     TextView tvGroupName, tvGroupDescription, tvTotalInvestment, tvMemberCount, tvUserInvestment;
 
     private String groupID;
@@ -48,8 +57,6 @@ public class GroupDetails extends AppCompatActivity {
         // Initialize UI components
         tvGroupName = findViewById(R.id.tvGroupName);
         tvGroupDescription = findViewById(R.id.tvGroupDescription);
-
-        // Uncomment these lines to properly initialize the TextViews
         tvTotalInvestment = findViewById(R.id.tvTotalInvestment);
         tvMemberCount = findViewById(R.id.tvMemberCount);
         tvUserInvestment = findViewById(R.id.tvUserInvestment);
@@ -57,6 +64,21 @@ public class GroupDetails extends AppCompatActivity {
         btnDeposit = findViewById(R.id.btnDeposit);
         btnWithdraw = findViewById(R.id.btnWithdraw);
         btnBack = findViewById(R.id.btnBack);
+
+        // Set up RecyclerView
+        recyclerActivities = findViewById(R.id.recyclerActivities);
+        recyclerActivities.setLayoutManager(new LinearLayoutManager(this));
+
+        // Add divider between items
+        recyclerActivities.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+        // Initialize adapter with empty list
+        activityList = new ArrayList<>();
+        activityAdapter = new ActivityAdapter(activityList);
+        recyclerActivities.setAdapter(activityAdapter);
+
+        // Load activities data
+        loadActivitiesData();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -70,13 +92,13 @@ public class GroupDetails extends AppCompatActivity {
         });
 
         btnWithdraw.setOnClickListener(v -> {
-            Intent intent = new Intent(GroupDetails.this, WithdrawAmount.class);
+            Intent intent = new Intent(GroupDetails.this, WithdrawAccount.class);
             intent.putExtra("groupID", groupID);
             startActivity(intent);
         });
 
         btnDeposit.setOnClickListener(v -> {
-            Intent intent = new Intent(GroupDetails.this, DepositAmount.class);
+            Intent intent = new Intent(GroupDetails.this, DepositAccount.class);
             intent.putExtra("groupID", groupID);
             startActivity(intent);
         });
@@ -103,7 +125,21 @@ public class GroupDetails extends AppCompatActivity {
             if (currentUser != null) {
                 loadUserInvestmentData(groupID, currentUser.getUid());
             }
+            // Refresh activities data
+            loadActivitiesData();
         }
+    }
+
+    private void loadActivitiesData() {
+        // This will be replaced with data from Firestore in future implementation
+        activityList = new ArrayList<>();
+        activityList.add(new Activity("Price", "Per Share", "$872.75", "-12.34 (9.82%)", true));
+        activityList.add(new Activity("Price", "Per Share", "$982.98", "-32.89 (2.8%)", true));
+        activityList.add(new Activity("Deposit", "Kurt", "$500.00", "+$500.00", false));
+        activityList.add(new Activity("Withdraw", "John", "$200.00", "-$200.00", true));
+
+        // Update the adapter with the new data
+        activityAdapter.updateActivities(activityList);
     }
 
     private void loadGroupData(String groupID) {
@@ -147,13 +183,13 @@ public class GroupDetails extends AppCompatActivity {
 
                             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
                             String formattedAmount = format.format(totalInvestment);
-                            tvTotalInvestment.setText("" + formattedAmount);
+                            tvTotalInvestment.setText(formattedAmount);
                         } catch (NumberFormatException e) {
                             Log.e(TAG, "Error parsing total investment", e);
                             tvTotalInvestment.setText("Unknown");
                         }
                     } else {
-                        tvTotalInvestment.setText("Php 0.00");
+                        tvTotalInvestment.setText("$0.00");
                     }
                 } else {
                     Log.w(TAG, "tvTotalInvestment is null - make sure it exists in your layout");
@@ -166,7 +202,7 @@ public class GroupDetails extends AppCompatActivity {
                             .get()
                             .addOnSuccessListener(querySnapshot -> {
                                 int memberCount = querySnapshot.size();
-                                tvMemberCount.setText("" + memberCount);
+                                tvMemberCount.setText(String.valueOf(memberCount));
                             })
                             .addOnFailureListener(e -> {
                                 Log.e(TAG, "Error counting members", e);
@@ -211,24 +247,24 @@ public class GroupDetails extends AppCompatActivity {
                                 if (tvUserInvestment != null) {
                                     NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
                                     String formattedAmount = format.format(amount);
-                                    tvUserInvestment.setText("" + formattedAmount);
+                                    tvUserInvestment.setText(formattedAmount);
                                 } else {
                                     Log.w(TAG, "tvUserInvestment is null - make sure it exists in your layout");
                                 }
                             } catch (NumberFormatException e) {
                                 Log.e(TAG, "Error parsing investment amount", e);
                                 if (tvUserInvestment != null) {
-                                    tvUserInvestment.setText("Your Investment: Unknown");
+                                    tvUserInvestment.setText("Unknown");
                                 }
                             }
                         } else {
                             if (tvUserInvestment != null) {
-                                tvUserInvestment.setText("Your Investment: Php 0.00");
+                                tvUserInvestment.setText("$0.00");
                             }
                         }
                     } else {
                         if (tvUserInvestment != null) {
-                            tvUserInvestment.setText("Your Investment: Php 0.00");
+                            tvUserInvestment.setText("$0.00");
                         } else {
                             Log.w(TAG, "tvUserInvestment is null - make sure it exists in your layout");
                         }
@@ -237,7 +273,7 @@ public class GroupDetails extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error loading user investment data", e);
                     if (tvUserInvestment != null) {
-                        tvUserInvestment.setText("Your Investment: Error");
+                        tvUserInvestment.setText("Error");
                     }
                 });
     }
