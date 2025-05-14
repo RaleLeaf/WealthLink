@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
@@ -51,6 +52,9 @@ public class GroupDetails extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+
+    // Define the progress dialog
+    private AlertDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +130,8 @@ public class GroupDetails extends AppCompatActivity {
 
         tvSettings.setOnClickListener(v -> {
             // Handle settings click
+            Intent intent = new Intent(GroupDetails.this, GroupSettings.class);
+            startActivity(intent);
             Toast.makeText(GroupDetails.this, "Settings clicked", Toast.LENGTH_SHORT).show();
             cardDropdown.setVisibility(View.GONE);
             isDropdownVisible = false;
@@ -139,8 +145,63 @@ public class GroupDetails extends AppCompatActivity {
         });
 
         tvLeaveGroup.setOnClickListener(v -> {
-            // Handle leave group click
-            Toast.makeText(GroupDetails.this, "Leave Group clicked", Toast.LENGTH_SHORT).show();
+            // Show confirmation dialog before leaving the group
+            new AlertDialog.Builder(GroupDetails.this)
+                    .setTitle("Leave Group")
+                    .setMessage("Are you sure you want to leave this group? Your investment amount will remain in the group unless withdrawn first.")
+                    .setPositiveButton("Leave", (dialog, which) -> {
+                        // Show loading indicator
+                        showProgressDialog("Leaving group...");
+
+                        // Get current user ID
+                        String userID = currentUser.getUid();
+
+                        // Query to find the specific membership document
+                        db.collection("groupMemberships")
+                                .whereEqualTo("groupID", groupID)
+                                .whereEqualTo("userID", userID)
+                                .get()
+                                .addOnSuccessListener(querySnapshot -> {
+                                    if (!querySnapshot.isEmpty()) {
+                                        // Get the document ID of the membership record
+                                        String membershipDocID = querySnapshot.getDocuments().get(0).getId();
+
+                                        // Delete the membership document
+                                        db.collection("groupMemberships").document(membershipDocID)
+                                                .delete()
+                                                .addOnSuccessListener(aVoid -> {
+                                                    hideProgressDialog();
+                                                    Toast.makeText(GroupDetails.this, "You have left the group", Toast.LENGTH_SHORT).show();
+
+                                                    // Return to the previous activity (likely the groups list)
+                                                    finish();
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    hideProgressDialog();
+                                                    Log.e(TAG, "Error leaving group", e);
+                                                    Toast.makeText(GroupDetails.this, "Failed to leave group: " + e.getMessage(),
+                                                            Toast.LENGTH_SHORT).show();
+                                                });
+                                    } else {
+                                        // No membership found
+                                        hideProgressDialog();
+                                        Log.e(TAG, "No membership found for this user in this group");
+                                        Toast.makeText(GroupDetails.this, "You are not a member of this group",
+                                                Toast.LENGTH_SHORT).show();
+                                        finish(); // Return to previous screen anyway
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    hideProgressDialog();
+                                    Log.e(TAG, "Error querying group membership", e);
+                                    Toast.makeText(GroupDetails.this, "Error: " + e.getMessage(),
+                                            Toast.LENGTH_SHORT).show();
+                                });
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+
+            // Close the dropdown menu
             cardDropdown.setVisibility(View.GONE);
             isDropdownVisible = false;
         });
@@ -155,6 +216,31 @@ public class GroupDetails extends AppCompatActivity {
         } else {
             Log.e(TAG, "No group ID provided");
             tvGroupName.setText("Error: No group found");
+        }
+    }
+
+    /**
+     * Shows a progress dialog with a custom message
+     */
+    private void showProgressDialog(String message) {
+        if (progressDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View view = getLayoutInflater().inflate(R.layout.dialog_progress, null);
+            TextView tvMessage = view.findViewById(R.id.tvProgressMessage);
+            tvMessage.setText(message);
+            builder.setView(view);
+            builder.setCancelable(false);
+            progressDialog = builder.create();
+        }
+        progressDialog.show();
+    }
+
+    /**
+     * Hides the progress dialog if it's showing
+     */
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 

@@ -3,13 +3,11 @@ package com.example.wealthlink;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,9 +19,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.activity.EdgeToEdge;
 import androidx.cardview.widget.CardView;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +34,7 @@ public class GroupActivityLog extends AppCompatActivity {
     private TextView tvGroupName;
     private TextView tvGroupDescription, tvTotalInvestment, tvMemberCount;
     private ImageButton btnBack, btnMore;
-    Button btnJoined;
+    private Button btnJoinGroup;
 
     // Dropdown menu elements
     private CardView cardDropdown;
@@ -50,8 +45,6 @@ public class GroupActivityLog extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-
-    private Button btnJoinGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,26 +58,65 @@ public class GroupActivityLog extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
 
         // Initialize UI components
+        initializeViews();
+
+        // Set up click listeners
+        setupClickListeners();
+
+        // Get the group ID from the intent
+        if (getIntent() != null && getIntent().hasExtra("groupID")) {
+            groupID = getIntent().getStringExtra("groupID");
+            if (groupID != null && !groupID.isEmpty()) {
+                loadGroupData(groupID);
+            } else {
+                Log.e(TAG, "Empty group ID provided");
+                tvGroupName.setText("Error: Invalid group ID");
+                Toast.makeText(this, "Invalid group ID", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Log.e(TAG, "No group ID provided");
+            tvGroupName.setText("Error: No group found");
+            Toast.makeText(this, "No group data found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void initializeViews() {
         tvGroupName = findViewById(R.id.tvGroupName);
         tvGroupDescription = findViewById(R.id.tvGroupDescription);
         tvTotalInvestment = findViewById(R.id.tvTotalInvestment);
         tvMemberCount = findViewById(R.id.tvMemberCount);
         btnBack = findViewById(R.id.btnBack);
+        btnMore = findViewById(R.id.btnMore);
+        btnJoinGroup = findViewById(R.id.btnJoinGroup);
 
+        // Initialize dropdown menu elements
+        cardDropdown = findViewById(R.id.cardDropdown);
+        tvSettings = findViewById(R.id.tvSettings);
+        tvReportIssue = findViewById(R.id.tvReportIssue);
+        tvLeaveGroup = findViewById(R.id.tvLeaveGroup);
+    }
+
+    private void setupClickListeners() {
         // Set up back button click listener
         btnBack.setOnClickListener(v -> finish()); // Go back to previous activity
 
-        // Set up dropdown menu click listeners
-
+        // Set up more options button click listener
         btnMore.setOnClickListener(v -> {
             Intent intent = new Intent(GroupActivityLog.this, ReportIssue.class);
             startActivity(intent);
         });
 
-        btnJoined.setOnClickListener(v -> {
-            showSubmittedPortfolioDialog();
+        // Set up Join Group button click listener
+        btnJoinGroup.setOnClickListener(v -> {
+            if (currentUser != null) {
+                joinGroup();
+            } else {
+                Toast.makeText(GroupActivityLog.this,
+                        "Please sign in to join this group", Toast.LENGTH_SHORT).show();
+            }
         });
 
+        // Set up dropdown menu click listeners
         tvSettings.setOnClickListener(v -> {
             // Handle settings click
             Toast.makeText(GroupActivityLog.this, "Settings clicked", Toast.LENGTH_SHORT).show();
@@ -105,32 +137,59 @@ public class GroupActivityLog extends AppCompatActivity {
             cardDropdown.setVisibility(View.GONE);
             isDropdownVisible = false;
         });
-
-        btnJoinGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        // Get the group ID from the intent
-        if (getIntent() != null && getIntent().hasExtra("groupID")) {
-            groupID = getIntent().getStringExtra("groupID");
-            if (groupID != null && !groupID.isEmpty()) {
-                loadGroupData(groupID);
-            } else {
-                Log.e(TAG, "Empty group ID provided");
-                tvGroupName.setText("Error: Invalid group ID");
-                Toast.makeText(this, "Invalid group ID", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Log.e(TAG, "No group ID provided");
-            tvGroupName.setText("Error: No group found");
-            Toast.makeText(this, "No group data found", Toast.LENGTH_SHORT).show();
-        }
     }
 
+    private void joinGroup() {
+        if (groupID == null || groupID.isEmpty() || currentUser == null) {
+            Toast.makeText(this, "Cannot join group at this time", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        String userID = currentUser.getUid();
+
+        // Create a new membership document
+        db.collection("groupMemberships")
+                .whereEqualTo("userID", userID)
+                .whereEqualTo("groupID", groupID)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        // User is not a member yet, add them
+                        addMemberToGroup(userID, groupID);
+                    } else {
+                        // User is already a member
+                        Toast.makeText(GroupActivityLog.this,
+                                "You are already a member of this group", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error checking membership", e);
+                    Toast.makeText(GroupActivityLog.this,
+                            "Error joining group. Please try again.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void addMemberToGroup(String userID, String groupID) {
+        // Create membership object
+        java.util.Map<String, Object> membership = new java.util.HashMap<>();
+        membership.put("userID", userID);
+        membership.put("groupID", groupID);
+        membership.put("joinedAt", new java.util.Date());
+
+        // Add to Firestore
+        db.collection("groupMemberships")
+                .add(membership)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(GroupActivityLog.this,
+                            "Successfully joined group!", Toast.LENGTH_SHORT).show();
+                    showSubmittedPortfolioDialog();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error joining group", e);
+                    Toast.makeText(GroupActivityLog.this,
+                            "Failed to join group. Please try again.", Toast.LENGTH_SHORT).show();
+                });
+    }
 
     private void loadGroupData(String groupID) {
         if (groupID == null || groupID.isEmpty()) {
@@ -212,6 +271,7 @@ public class GroupActivityLog extends AppCompatActivity {
             tvGroupName.setText("Error loading group");
         });
     }
+
     private void showSubmittedPortfolioDialog() {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -231,7 +291,12 @@ public class GroupActivityLog extends AppCompatActivity {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (dialog.isShowing()) {
                 dialog.dismiss();
-                finish(); // Return to previous screen
+
+                // Navigate to GroupDetails after joining
+                Intent intent = new Intent(GroupActivityLog.this, GroupDetails.class);
+                intent.putExtra("groupID", groupID);
+                startActivity(intent);
+                finish(); // Close this activity
             }
         }, 2000);
     }
