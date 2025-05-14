@@ -2,9 +2,12 @@ package com.example.wealthlink;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -36,6 +39,10 @@ public class GroupListActivity extends BaseActivity {
     Button joinGroup, createGroup;
     private RecyclerView rvGroups;
     private NavigationView navigationView;
+    private EditText etSearch;
+    private GroupAdapter groupAdapter;
+    private List<Group> allGroups = new ArrayList<>();
+    private Map<String, String> groupNameToIdMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,7 @@ public class GroupListActivity extends BaseActivity {
         rvGroups = findViewById(R.id.rvGroups);
         joinGroup = findViewById(R.id.btnJoinViaInvite);
         createGroup = findViewById(R.id.btnCreateGroup);
+        etSearch = findViewById(R.id.etSearch);
 
         // Set up menu button click listener
         ivMenu.setOnClickListener(new View.OnClickListener() {
@@ -86,10 +94,47 @@ public class GroupListActivity extends BaseActivity {
             }
         });
 
+        // Set up RecyclerView
+        rvGroups.setLayoutManager(new LinearLayoutManager(this));
+        groupAdapter = new GroupAdapter(allGroups, groupNameToIdMap, this);
+        rvGroups.setAdapter(groupAdapter);
+
+        // Set up search functionality
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Filter the list based on search query
+                groupAdapter.filter(s.toString());
+                Log.d(TAG, "Filtering with query: " + s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        });
+
+        // Fetch groups data
+        fetchGroups();
+    }
+
+    /**
+     * Fetch all groups from Firestore
+     */
+    private void fetchGroups() {
         // Initialize Firebase Auth and Firestore
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Clear previous data
+        allGroups.clear();
+        groupNameToIdMap.clear();
 
         // Fetch all groups from the Firestore "groups" collection
         db.collection("groups")
@@ -98,9 +143,6 @@ public class GroupListActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            List<Group> allGroups = new ArrayList<>();
-                            Map<String, String> groupNameToIdMap = new HashMap<>();
-
                             for (QueryDocumentSnapshot groupDocument : task.getResult()) {
                                 try {
                                     // Extract group name from document
@@ -152,9 +194,8 @@ public class GroupListActivity extends BaseActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    // Set up RecyclerView with retrieved groups
-                                    rvGroups.setLayoutManager(new LinearLayoutManager(GroupListActivity.this));
-                                    GroupAdapter groupAdapter = new GroupAdapter(allGroups, groupNameToIdMap, GroupListActivity.this);
+                                    // Notify adapter of data change
+                                    groupAdapter = new GroupAdapter(allGroups, groupNameToIdMap, GroupListActivity.this);
                                     rvGroups.setAdapter(groupAdapter);
 
                                     Log.d(TAG, "Successfully retrieved all groups: " + allGroups.size());
@@ -162,12 +203,22 @@ public class GroupListActivity extends BaseActivity {
                                     // Handle empty state
                                     if (allGroups.isEmpty()) {
                                         Log.d(TAG, "No groups found in the database.");
-                                        // You might want to show an empty state message here
+                                        Toast.makeText(GroupListActivity.this,
+                                                "No groups available",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    // Apply any existing search filter
+                                    if (etSearch != null && etSearch.getText().length() > 0) {
+                                        groupAdapter.filter(etSearch.getText().toString());
                                     }
                                 }
                             });
                         } else {
                             Log.e(TAG, "Error getting groups: ", task.getException());
+                            Toast.makeText(GroupListActivity.this,
+                                    "Error loading groups. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

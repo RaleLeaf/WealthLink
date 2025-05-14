@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,16 +28,19 @@ import java.util.Map;
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder> {
     private static final String TAG = "GroupAdapter";
     private List<Group> groups;
+    private List<Group> filteredGroups; // For filtered search results
     private Map<String, String> groupIdsMap; // To store groupName -> groupId mapping
     private Context context;
 
     public GroupAdapter(List<Group> groups) {
         this.groups = groups;
+        this.filteredGroups = new ArrayList<>(groups);
         this.groupIdsMap = new HashMap<>();
     }
 
     public GroupAdapter(List<Group> groups, Map<String, String> groupIdsMap, Context context) {
         this.groups = groups;
+        this.filteredGroups = new ArrayList<>(groups);
         this.groupIdsMap = groupIdsMap != null ? groupIdsMap : new HashMap<>();
         this.context = context;
     }
@@ -69,7 +73,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
-        Group group = groups.get(position);
+        Group group = filteredGroups.get(position);
         holder.tvGroupName.setText(group.getName());
         holder.tvGroupTime.setText(group.getTime());
         holder.tvGroupAmount.setText(group.getAmount());
@@ -96,7 +100,33 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     @Override
     public int getItemCount() {
-        return groups.size();
+        return filteredGroups.size();
+    }
+
+    /**
+     * Filter the list of groups based on search query
+     * @param query The search query entered by the user
+     */
+    public void filter(String query) {
+        filteredGroups.clear();
+
+        if (query.isEmpty()) {
+            // If query is empty, show all groups
+            filteredGroups.addAll(groups);
+        } else {
+            // Convert query to lowercase for case-insensitive search
+            String lowerCaseQuery = query.toLowerCase();
+
+            // Filter groups that contain the query string in their name
+            for (Group group : groups) {
+                if (group.getName().toLowerCase().contains(lowerCaseQuery)) {
+                    filteredGroups.add(group);
+                }
+            }
+        }
+
+        // Notify adapter that data has changed to refresh the RecyclerView
+        notifyDataSetChanged();
     }
 
     private void checkMembershipAndNavigate(final String groupId) {
