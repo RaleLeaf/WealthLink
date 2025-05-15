@@ -192,7 +192,7 @@
             android:layout_alignBaseline="@id/tvFeeLabel"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
-            android:text="$0.00"
+            android:text="Php 0.00"
             android:textColor="#000000"
             android:textSize="18sp" />
 
@@ -225,7 +225,7 @@
             android:layout_alignBaseline="@id/tvTotalLabel"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
-            android:text="$0.00"
+            android:text="Php 0.00"
             android:textColor="#000000"
             android:textSize="18sp" />
     </RelativeLayout>
