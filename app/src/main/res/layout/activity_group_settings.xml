@@ -98,16 +98,15 @@
                     android:id="@+id/tvGroupName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lively Inc."
+                    android:text="Group Name"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvGroupCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="LIV"
+                    android:text="Group Settings"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
             </LinearLayout>

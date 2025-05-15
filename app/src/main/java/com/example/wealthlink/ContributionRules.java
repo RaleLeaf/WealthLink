@@ -1,11 +1,20 @@
 package com.example.wealthlink;
 
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+
+import androidx.activity.EdgeToEdge;
+
 import java.util.Date;
 
-/**
- * Model class for storing group contribution rules
- */
-public class ContributionRules extends android.app.Activity {
+import androidx.activity.ComponentActivity;
+
+public class ContributionRules extends ComponentActivity {
+
+    ImageButton back;
+
     private String frequency;
     private String amountType; // "Fixed" or "Flexible"
     private double minimumAmount;
@@ -13,6 +22,24 @@ public class ContributionRules extends android.app.Activity {
     private Date endDate;
     private String visibility; // "Public", "Private", or "Hidden"
     private String joinMethod; // "Invite-only", "Application", or "Open join"
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_contribution_rules);
+
+        back = findViewById(R.id.btnBack);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+    }
 
     // Default constructor
     public ContributionRules() {
@@ -115,4 +142,5 @@ public class ContributionRules extends android.app.Activity {
             return String.format("$%.2f", minimumAmount);
         }
     }
+
 }
