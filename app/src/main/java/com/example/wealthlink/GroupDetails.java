@@ -558,12 +558,12 @@ public class GroupDetails extends AppCompatActivity {
                             }
                         } else {
                             if (tvUserInvestment != null) {
-                                tvUserInvestment.setText("$0.00");
+                                tvUserInvestment.setText("₱0.00");
                             }
                         }
                     } else {
                         if (tvUserInvestment != null) {
-                            tvUserInvestment.setText("$0.00");
+                            tvUserInvestment.setText("₱0.00");
                         } else {
                             Log.w(TAG, "tvUserInvestment is null - make sure it exists in your layout");
                         }
