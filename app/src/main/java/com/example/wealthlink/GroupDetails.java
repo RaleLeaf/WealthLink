@@ -324,7 +324,7 @@ public class GroupDetails extends AppCompatActivity {
                                 // Get transaction data
                                 String transactionType = document.getString("transactionType");
                                 String userID = document.getString("userID");
-                                Object amountObj = document.get("amount");
+                                Object amountObj = document.get("netAmount");
                                 Date transactionDate = document.getDate("transactionDate");
 
                                 // Process amount
@@ -372,7 +372,7 @@ public class GroupDetails extends AppCompatActivity {
 
                             // Now try to look up user names asynchronously
                             // (This happens after initial display, so app won't seem frozen)
-                            lookupUserNames(groupID);
+                            lookupUserNames();
                         }
                     } else {
                         Log.e(TAG, "Error loading group activities", task.getException());
@@ -389,7 +389,7 @@ public class GroupDetails extends AppCompatActivity {
     }
 
     // Lookup user names after transactions are loaded
-    private void lookupUserNames(String groupID) {
+    private void lookupUserNames() {
         // We re-query to get the transaction data with user IDs
         db.collection("transactions")
                 .whereEqualTo("groupID", groupID)

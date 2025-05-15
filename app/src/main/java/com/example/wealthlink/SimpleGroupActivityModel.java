@@ -1,20 +1,15 @@
 package com.example.wealthlink;
 
-import java.util.Date;
-
-/**
- * Model class representing a group activity (transaction)
- */
-public class GroupActivityModel {
+public class SimpleGroupActivityModel {
     private String title;
-    private String byUser;
+    private String userName;
     private String date;
     private String amount;
     private boolean isWithdrawal;
 
-    public GroupActivityModel(String title, String byUser, String date, String amount, boolean isWithdrawal) {
+    public SimpleGroupActivityModel(String title, String userName, String date, String amount, boolean isWithdrawal) {
         this.title = title;
-        this.byUser = byUser;
+        this.userName = userName;
         this.date = date;
         this.amount = amount;
         this.isWithdrawal = isWithdrawal;
@@ -24,8 +19,8 @@ public class GroupActivityModel {
         return title;
     }
 
-    public String getByUser() {
-        return byUser;
+    public String getUserName() {
+        return userName;
     }
 
     public String getDate() {
