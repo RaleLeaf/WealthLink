@@ -26,9 +26,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,8 +43,8 @@ public class GroupDetails extends AppCompatActivity {
     Button btnDeposit, btnWithdraw;
     ImageButton btnBack, btnMore;
     private RecyclerView recyclerActivities;
-    private ActivityAdapter activityAdapter;
-    private List<Activity> activityList;
+    private GroupActivityAdapter activityAdapter;
+    private List<GroupActivityModel> activityList;
     TextView tvGroupName, tvGroupDescription, tvTotalInvestment, tvMemberCount, tvUserInvestment;
 
     // Dropdown menu elements
@@ -96,11 +100,8 @@ public class GroupDetails extends AppCompatActivity {
 
         // Initialize adapter with empty list
         activityList = new ArrayList<>();
-        activityAdapter = new ActivityAdapter(activityList);
+        activityAdapter = new GroupActivityAdapter(activityList);
         recyclerActivities.setAdapter(activityAdapter);
-
-        // Load activities data
-        loadActivitiesData();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -114,13 +115,13 @@ public class GroupDetails extends AppCompatActivity {
         });
 
         btnWithdraw.setOnClickListener(v -> {
-            Intent intent = new Intent(GroupDetails.this, WithdrawAccount.class);
+            Intent intent = new Intent(GroupDetails.this, WithdrawAmount.class);
             intent.putExtra("groupID", groupID);
             startActivity(intent);
         });
 
         btnDeposit.setOnClickListener(v -> {
-            Intent intent = new Intent(GroupDetails.this, DepositAccount.class);
+            Intent intent = new Intent(GroupDetails.this, DepositAmount.class);
             intent.putExtra("groupID", groupID);
             startActivity(intent);
         });
@@ -213,6 +214,8 @@ public class GroupDetails extends AppCompatActivity {
             if (currentUser != null) {
                 loadUserInvestmentData(groupID, currentUser.getUid());
             }
+            // Load group activity data
+            loadGroupActivities(groupID);
         } else {
             Log.e(TAG, "No group ID provided");
             tvGroupName.setText("Error: No group found");
@@ -253,8 +256,8 @@ public class GroupDetails extends AppCompatActivity {
             if (currentUser != null) {
                 loadUserInvestmentData(groupID, currentUser.getUid());
             }
-            // Refresh activities data
-            loadActivitiesData();
+            // Refresh group activities data
+            loadGroupActivities(groupID);
         }
     }
 
@@ -279,16 +282,163 @@ public class GroupDetails extends AppCompatActivity {
         return super.dispatchTouchEvent(event);
     }
 
-    private void loadActivitiesData() {
-        // This will be replaced with data from Firestore in future implementation
-        activityList = new ArrayList<>();
-        activityList.add(new Activity("Price", "Per Share", "$872.75", "-12.34 (9.82%)", true));
-        activityList.add(new Activity("Price", "Per Share", "$982.98", "-32.89 (2.8%)", true));
-        activityList.add(new Activity("Deposit", "Kurt", "$500.00", "+$500.00", false));
-        activityList.add(new Activity("Withdraw", "John", "$200.00", "-$200.00", true));
+    private void loadGroupActivities(String groupID) {
+        if (groupID == null || groupID.isEmpty()) {
+            Log.e(TAG, "Invalid group ID for loading activities");
+            return;
+        }
 
-        // Update the adapter with the new data
-        activityAdapter.updateActivities(activityList);
+        // Create a new list each time we load activities
+        activityList = new ArrayList<>();
+
+        // Show loading state
+        showProgressDialog("Loading group activities...");
+
+        // Query transactions collection for records related to this group
+        db.collection("transactions")
+                .whereEqualTo("groupID", groupID)
+                .orderBy("transactionDate", Query.Direction.DESCENDING)
+                .limit(20) // Limit to most recent 20 transactions
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().isEmpty()) {
+                            // If no transactions found, show a placeholder message
+                            Log.d(TAG, "No activity found for this group");
+                            activityList.add(new GroupActivityModel(
+                                    "No Activity",
+                                    "N/A",
+                                    "No recent transactions",
+                                    "₱0.00",
+                                    false));
+
+                            // Update adapter with empty state
+                            activityAdapter.updateActivities(activityList);
+                            hideProgressDialog();
+                        } else {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+
+                            // First, create all transaction items with placeholder names
+                            // This ensures we have a complete list before updating the adapter
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Get transaction data
+                                String transactionType = document.getString("transactionType");
+                                String userID = document.getString("userID");
+                                Object amountObj = document.get("amount");
+                                Date transactionDate = document.getDate("transactionDate");
+
+                                // Process amount
+                                double amount = 0.0;
+                                if (amountObj instanceof Number) {
+                                    amount = ((Number) amountObj).doubleValue();
+                                } else if (amountObj instanceof String) {
+                                    try {
+                                        amount = Double.parseDouble((String) amountObj);
+                                    } catch (NumberFormatException e) {
+                                        Log.e(TAG, "Error parsing amount", e);
+                                    }
+                                }
+
+                                // Format amount as currency
+                                NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("en", "PH"));
+                                String formattedAmount = currencyFormat.format(amount);
+
+                                // Format date
+                                String formattedDate = transactionDate != null
+                                        ? dateFormat.format(transactionDate)
+                                        : "Unknown date";
+
+                                // Determine if this is a withdrawal or deposit
+                                boolean isWithdrawal = "withdraw".equalsIgnoreCase(transactionType);
+
+                                // Get the transaction title
+                                final String transactionTitle = transactionType != null
+                                        ? transactionType.substring(0, 1).toUpperCase() + transactionType.substring(1)
+                                        : "Transaction";
+
+                                // Add to our list with initial "Member" placeholder (we'll update names later)
+                                activityList.add(new GroupActivityModel(
+                                        transactionTitle,
+                                        "Member",
+                                        formattedDate,
+                                        formattedAmount,
+                                        isWithdrawal
+                                ));
+                            }
+
+                            // Update the adapter with initial data
+                            activityAdapter.updateActivities(activityList);
+                            hideProgressDialog();
+
+                            // Now try to look up user names asynchronously
+                            // (This happens after initial display, so app won't seem frozen)
+                            lookupUserNames(groupID);
+                        }
+                    } else {
+                        Log.e(TAG, "Error loading group activities", task.getException());
+                        activityList.add(new GroupActivityModel(
+                                "Error",
+                                "Failed to load",
+                                "Please try again later",
+                                "₱0.00",
+                                false));
+                        activityAdapter.updateActivities(activityList);
+                        hideProgressDialog();
+                    }
+                });
+    }
+
+    // Lookup user names after transactions are loaded
+    private void lookupUserNames(String groupID) {
+        // We re-query to get the transaction data with user IDs
+        db.collection("transactions")
+                .whereEqualTo("groupID", groupID)
+                .orderBy("transactionDate", Query.Direction.DESCENDING)
+                .limit(20)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        int index = 0;
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            final int currentIndex = index;
+                            String userID = document.getString("userID");
+
+                            if (userID != null && !userID.isEmpty() && currentIndex < activityList.size()) {
+                                db.collection("users").document(userID)
+                                        .get()
+                                        .addOnSuccessListener(userDoc -> {
+                                            if (userDoc.exists() && currentIndex < activityList.size()) {
+                                                String firstName = userDoc.getString("firstName");
+                                                String lastName = userDoc.getString("lastName");
+                                                String username = "Member";
+
+                                                if (firstName != null && !firstName.isEmpty()) {
+                                                    username = firstName;
+                                                    if (lastName != null && !lastName.isEmpty()) {
+                                                        username += " " + lastName.charAt(0) + ".";
+                                                    }
+                                                }
+
+                                                // Create updated activity with real username
+                                                GroupActivityModel currentActivity = activityList.get(currentIndex);
+                                                GroupActivityModel updatedActivity = new GroupActivityModel(
+                                                        currentActivity.getTitle(),
+                                                        username,
+                                                        currentActivity.getDate(),
+                                                        currentActivity.getAmount(),
+                                                        currentActivity.isWithdrawal()
+                                                );
+
+                                                // Update the list and notify adapter of change
+                                                activityList.set(currentIndex, updatedActivity);
+                                                activityAdapter.notifyItemChanged(currentIndex);
+                                            }
+                                        });
+                            }
+                            index++;
+                        }
+                    }
+                });
     }
 
     private void loadGroupData(String groupID) {
@@ -394,7 +544,7 @@ public class GroupDetails extends AppCompatActivity {
                                 }
 
                                 if (tvUserInvestment != null) {
-                                    NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
+                                    NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("en", "PH"));
                                     String formattedAmount = format.format(amount);
                                     tvUserInvestment.setText(formattedAmount);
                                 } else {
