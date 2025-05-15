@@ -86,7 +86,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/profimg" />
+                    android:src="@drawable/profile_pic" />
 
                 <View
                     android:layout_width="match_parent"

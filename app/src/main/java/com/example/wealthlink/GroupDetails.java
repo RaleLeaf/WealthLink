@@ -132,8 +132,8 @@ public class GroupDetails extends AppCompatActivity {
         tvSettings.setOnClickListener(v -> {
             // Handle settings click
             Intent intent = new Intent(GroupDetails.this, GroupSettings.class);
+            intent.putExtra("groupID", groupID);
             startActivity(intent);
-            Toast.makeText(GroupDetails.this, "Settings clicked", Toast.LENGTH_SHORT).show();
             cardDropdown.setVisibility(View.GONE);
             isDropdownVisible = false;
         });
