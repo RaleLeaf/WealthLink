@@ -13,8 +13,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.navigation.NavigationView;
 
 public class JoinGroupActivity extends AppCompatActivity {
 
@@ -30,6 +33,10 @@ public class JoinGroupActivity extends AppCompatActivity {
     private ImageButton backButtonDetails;
     private ImageButton backButtonSuccess;
 
+    // Navigation drawer
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+
     // Demo mode constants
     private static final String DEMO_CODE = "DEMO123";
     private static final String LIVELY_CODE = "HDJ2enSNliN15";
@@ -43,6 +50,7 @@ public class JoinGroupActivity extends AppCompatActivity {
         // Initialize UI components
         initializeViews();
         setupListeners();
+        setupDrawer();
 
         // Check if we should start in demo mode
         if (getIntent().getBooleanExtra("DEMO_MODE", false)) {
@@ -69,6 +77,10 @@ public class JoinGroupActivity extends AppCompatActivity {
         backButtonDetails = findViewById(R.id.backButtonDetails);
         backButtonSuccess = findViewById(R.id.backButtonSuccess);
 
+        // Navigation drawer
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navigation_view);
+
         // Set initial state
         mainJoinLayout.setVisibility(View.VISIBLE);
         groupDetailsLayout.setVisibility(View.GONE);
@@ -93,7 +105,6 @@ public class JoinGroupActivity extends AppCompatActivity {
                     validateInviteCode(LIVELY_CODE);
                 }
             }
-
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -132,16 +143,58 @@ public class JoinGroupActivity extends AppCompatActivity {
             return true;
         });
 
-        // Toolbar menu button
+        // Toolbar menu button - modified to open the drawer
         ImageButton menuButton = findViewById(R.id.btnMenu);
         menuButton.setOnClickListener(v -> {
-            // Open navigation drawer or menu
-            if (isDemoMode) {
-                // In demo mode, cycle through the views
-                cycleDemoViews();
+            if (drawerLayout != null) {
+                drawerLayout.openDrawer(GravityCompat.START);
             } else {
                 Toast.makeText(JoinGroupActivity.this, "Menu clicked", Toast.LENGTH_SHORT).show();
             }
+        });
+    }
+
+    /**
+     * Setup the navigation drawer and its click listeners
+     */
+    private void setupDrawer() {
+        // Find all navigation items
+        LinearLayout navHome = navigationView.findViewById(R.id.nav_home);
+        LinearLayout navGroups = navigationView.findViewById(R.id.nav_groups);
+        LinearLayout navNotifications = navigationView.findViewById(R.id.nav_notifications);
+        LinearLayout navHistory = navigationView.findViewById(R.id.nav_history);
+        LinearLayout navAccount = navigationView.findViewById(R.id.nav_account);
+
+        // Set click listeners for each navigation item
+        navHome.setOnClickListener(v -> {
+            Intent intent = new Intent(JoinGroupActivity.this, wealthLinkMainPage.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navGroups.setOnClickListener(v -> {
+            // Navigate to Groups screen (e.g., GroupListActivity)
+            Intent intent = new Intent(JoinGroupActivity.this, GroupListActivity.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navNotifications.setOnClickListener(v -> {
+            // Replace with navigation to your Notifications activity
+            Toast.makeText(JoinGroupActivity.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navHistory.setOnClickListener(v -> {
+            // Replace with navigation to your History activity
+            Toast.makeText(JoinGroupActivity.this, "History clicked", Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(JoinGroupActivity.this, AccountView.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
         });
     }
 

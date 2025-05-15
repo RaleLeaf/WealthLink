@@ -13,13 +13,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.activity.EdgeToEdge;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -33,8 +37,10 @@ public class GroupActivityLog extends AppCompatActivity {
 
     private TextView tvGroupName;
     private TextView tvGroupDescription, tvTotalInvestment, tvMemberCount;
-    private ImageButton btnBack, btnMore;
+    private ImageButton btnBack, btnMore,menuButton;
     private Button btnJoinGroup;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
     // Dropdown menu elements
     private CardView cardDropdown;
@@ -56,6 +62,8 @@ public class GroupActivityLog extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+        DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+        NavigationView navigationView = findViewById(R.id.navigation_view);
 
         // Initialize UI components
         initializeViews();
@@ -88,6 +96,18 @@ public class GroupActivityLog extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         btnMore = findViewById(R.id.btnMore);
         btnJoinGroup = findViewById(R.id.btnJoinGroup);
+        // Initialize DrawerLayout and NavigationView
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navigation_view);
+        menuButton = findViewById(R.id.btnHamburger); // Replace with your actual button ID
+        if (menuButton != null) {
+            menuButton.setOnClickListener(v -> {
+                if (drawerLayout != null) {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
+            });
+        }
+        setupDrawer();
 
         // Initialize dropdown menu elements
         cardDropdown = findViewById(R.id.cardDropdown);
@@ -299,5 +319,59 @@ public class GroupActivityLog extends AppCompatActivity {
                 finish(); // Close this activity
             }
         }, 2000);
+    }
+    private void setupDrawer() {
+        // Find all navigation items
+        LinearLayout navHome = navigationView.findViewById(R.id.nav_home);
+        LinearLayout navGroups = navigationView.findViewById(R.id.nav_groups);
+        LinearLayout navNotifications = navigationView.findViewById(R.id.nav_notifications);
+        LinearLayout navHistory = navigationView.findViewById(R.id.nav_history);
+        LinearLayout navAccount = navigationView.findViewById(R.id.nav_account);
+        LinearLayout navLogout = navigationView.findViewById(R.id.nav_logout);
+
+        // Set click listeners for each navigation item
+        navHome.setOnClickListener(v -> {
+            Intent intent = new Intent(GroupActivityLog.this, wealthLinkMainPage.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navGroups.setOnClickListener(v -> {
+            Intent intent = new Intent(GroupActivityLog.this, GroupListActivity.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navNotifications.setOnClickListener(v -> {
+            // Replace with navigation to your Notifications activity
+            Toast.makeText(GroupActivityLog.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navHistory.setOnClickListener(v -> {
+            // Replace with navigation to your History activity
+            Toast.makeText(GroupActivityLog.this, "History clicked", Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        navAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(GroupActivityLog.this, AccountView.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        // Add logout handler
+        if (navLogout != null) {
+            navLogout.setOnClickListener(v -> {
+                // Sign out from Firebase Authentication
+                FirebaseAuth.getInstance().signOut();
+
+                // Redirect to login screen
+                Intent intent = new Intent(GroupActivityLog.this, Login.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            });
+        }
     }
 }
