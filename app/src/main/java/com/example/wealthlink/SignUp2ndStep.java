@@ -19,7 +19,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -56,6 +55,9 @@ public class SignUp2ndStep extends AppCompatActivity {
 
         firstName = getIntent().getStringExtra("firstName");
         middleName = getIntent().getStringExtra("middleName");
+        if(middleName.isEmpty()){
+            middleName = "";
+        }
         lastName = getIntent().getStringExtra("lastName");
 
         mAuth = FirebaseAuth.getInstance();
@@ -100,7 +102,7 @@ public class SignUp2ndStep extends AppCompatActivity {
                                             user.put("middleName", middleName);
                                             user.put("lastName", lastName);
                                             user.put("address", null);
-                                            user.put("balance", 1000000);
+                                            user.put("balance", "1000000");
                                             user.put("birthday", null);
                                             user.put("gender", null);
                                             user.put("phoneNumber", null);
@@ -115,6 +117,10 @@ public class SignUp2ndStep extends AppCompatActivity {
                                                         @Override
                                                         public void onSuccess(Void aVoid) {
                                                             Toast.makeText(SignUp2ndStep.this, "User data saved", Toast.LENGTH_SHORT).show();
+                                                            // Intent to go to Homepage
+                                                            Intent homeIntent = new Intent(SignUp2ndStep.this, wealthLinkMainPage.class);
+                                                            startActivity(homeIntent);
+                                                            finish();
                                                         }
                                                     })
                                                     .addOnFailureListener(new OnFailureListener() {
@@ -129,10 +135,7 @@ public class SignUp2ndStep extends AppCompatActivity {
                                     }
                                 }
                             });
-                    // Intent to go to Homepage
-                    Intent homeIntent = new Intent(SignUp2ndStep.this, wealthLinkMainPage.class);
-                    startActivity(homeIntent);
-                    finish();
+
                 }
             }
         });
